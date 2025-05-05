@@ -72,6 +72,7 @@
             width: 100%;
             height: 400px;
             object-fit: cover;
+            background-color: var(--secondary-color);
         }
         
         .dish-content {
@@ -244,6 +245,12 @@
             margin-bottom: 20px;
             font-weight: bold;
         }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--dark-gray);
+        }
     </style>
 </head>
 <body>
@@ -256,35 +263,12 @@
     </header>
     
     <div class="container">
-        <div class="dish-container">
-            <img src="https://via.placeholder.com/1200x400?text=Imagem+do+Prato" alt="Feijoada Completa" class="dish-image">
-            
-            <div class="dish-content">
-                <div class="dish-header">
-                    <h1 class="dish-title">Feijoada Completa</h1>
-                    <div class="dish-meta">
-                        Publicado por: <span class="dish-author">Chef João Silva</span> em <span id="publish-date">15/05/2023 às 14:30</span>
-                    </div>
-                </div>
-                
-                <p class="dish-description">
-                    A tradicional feijoada brasileira, preparada com feijão preto, diversas carnes suínas, acompanhada de couve refogada, farofa, arroz e laranja. Um prato completo que representa a cultura e sabor do Brasil.
-                </p>
-                
-                <div class="dish-actions">
-                    <button class="action-btn like-btn" id="like-btn">
-                        <span>👍</span>
-                        <span class="action-count" id="like-count">124</span>
-                    </button>
-                    
-                    <button class="action-btn dislike-btn" id="dislike-btn">
-                        <span>👎</span>
-                        <span class="action-count" id="dislike-count">8</span>
-                    </button>
-                </div>
-            </div>
+        <!-- Container do Prato (dados serão injetados via JavaScript) -->
+        <div class="dish-container" id="dish-container">
+            <div class="loading">Carregando informações do prato...</div>
         </div>
         
+        <!-- Seção de Comentários -->
         <div class="comments-section">
             <h2 class="section-title">Comentários</h2>
             
@@ -292,152 +276,229 @@
                 Você precisa estar logado para comentar. <a href="#" id="login-link">Faça login</a> ou <a href="#" id="register-link">cadastre-se</a>.
             </div>
             
-            <form class="comment-form" id="comment-form">
+            <form class="comment-form" id="comment-form" style="display: none;">
                 <textarea class="comment-input" id="comment-text" placeholder="Adicione seu comentário..."></textarea>
                 <button type="submit" class="submit-comment">Enviar Comentário</button>
             </form>
             
             <div class="comments-list" id="comments-list">
-                <!-- Exemplo de comentário 1 -->
-                <div class="comment">
-                    <div class="comment-header">
-                        <span class="comment-author">Maria Oliveira</span>
-                        <span class="comment-date">20/05/2023 às 09:15</span>
-                    </div>
-                    <p class="comment-text">
-                        Adorei a receita! Fiz para minha família no final de semana e todos elogiaram. A dica de servir com uma pimentinha caseira ficou perfeita.
-                    </p>
-                    <div class="comment-actions">
-                        <span class="comment-action">Responder</span>
-                        <span class="comment-action">Reportar</span>
-                    </div>
-                </div>
-                
-                <!-- Exemplo de comentário 2 -->
-                <div class="comment">
-                    <div class="comment-header">
-                        <span class="comment-author">Carlos Souza</span>
-                        <span class="comment-date">18/05/2023 às 21:45</span>
-                    </div>
-                    <p class="comment-text">
-                        Sempre quis aprender a fazer uma feijoada autêntica. Essa receita tem o equilíbrio perfeito de sabores. Obrigado por compartilhar!
-                    </p>
-                    <div class="comment-actions">
-                        <span class="comment-action">Responder</span>
-                        <span class="comment-action">Reportar</span>
-                    </div>
-                </div>
+                <div class="loading">Carregando comentários...</div>
             </div>
         </div>
     </div>
 
+    <!-- Template para o prato (usado pelo JavaScript) -->
+    <template id="dish-template">
+        <img class="dish-image" src="" alt="Imagem do prato">
+        <div class="dish-content">
+            <div class="dish-header">
+                <h1 class="dish-title"></h1>
+                <div class="dish-meta">
+                    Publicado por: <span class="dish-author"></span> em <span class="publish-date"></span>
+                </div>
+            </div>
+            <p class="dish-description"></p>
+            <div class="dish-actions">
+                <button class="action-btn like-btn" id="like-btn">
+                    <span>👍</span>
+                    <span class="action-count" id="like-count">0</span>
+                </button>
+                <button class="action-btn dislike-btn" id="dislike-btn">
+                    <span>👎</span>
+                    <span class="action-count" id="dislike-count">0</span>
+                </button>
+            </div>
+        </div>
+    </template>
+    
+    <!-- Template para comentários (usado pelo JavaScript) -->
+    <template id="comment-template">
+        <div class="comment">
+            <div class="comment-header">
+                <span class="comment-author"></span>
+                <span class="comment-date"></span>
+            </div>
+            <p class="comment-text"></p>
+            <div class="comment-actions">
+                <span class="comment-action">Responder</span>
+                <span class="comment-action">Reportar</span>
+            </div>
+        </div>
+    </template>
+
     <script>
         // Elementos do DOM
-        const loginBtn = document.getElementById('login-btn');
-        const registerBtn = document.getElementById('register-btn');
-        const likeBtn = document.getElementById('like-btn');
-        const dislikeBtn = document.getElementById('dislike-btn');
+        const dishContainer = document.getElementById('dish-container');
+        const commentsList = document.getElementById('comments-list');
         const commentForm = document.getElementById('comment-form');
         const commentText = document.getElementById('comment-text');
-        const commentsList = document.getElementById('comments-list');
         const loginMessage = document.getElementById('login-message');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
         const loginLink = document.getElementById('login-link');
         const registerLink = document.getElementById('register-link');
         
-        // Estado da aplicação (simulando usuário logado)
+        // Templates
+        const dishTemplate = document.getElementById('dish-template');
+        const commentTemplate = document.getElementById('comment-template');
+        
+        // Estado da aplicação
         let isLoggedIn = false;
         let currentUser = null;
+        let currentDishId = null; // Será obtido da URL ou parâmetro
         
-        // Dados simulados (serão substituídos pelo banco de dados real)
-        let dishData = {
-            id: 1,
-            name: "Feijoada Completa",
-            author: "Chef João Silva",
-            publishDate: "2023-05-15T14:30:00",
-            description: "A tradicional feijoada brasileira...",
-            likes: 124,
-            dislikes: 8,
-            comments: [
-                {
-                    id: 1,
-                    author: "Maria Oliveira",
-                    date: "2023-05-20T09:15:00",
-                    text: "Adorei a receita! Fiz para minha família no final de semana e todos elogiaram...",
-                    replies: []
-                },
-                {
-                    id: 2,
-                    author: "Carlos Souza",
-                    date: "2023-05-18T21:45:00",
-                    text: "Sempre quis aprender a fazer uma feijoada autêntica...",
-                    replies: []
-                }
-            ]
-        };
+        // Função para carregar os dados do prato (simulando chamada à API)
+        async function loadDishData(dishId) {
+            try {
+                // Substituir por chamada real ao seu backend ASP.NET
+                // const response = await fetch(`/api/dishes/${dishId}`);
+                // const dishData = await response.json();
+                
+                // Simulação enquanto não conecta com o backend
+                const dishData = {
+                    id: dishId,
+                    name: "Prato do Banco de Dados",
+                    description: "Descrição carregada do banco de dados",
+                    imageUrl: "https://via.placeholder.com/1200x400?text=Imagem+do+Banco+de+Dados",
+                    author: "Autor do Banco de Dados",
+                    publishDate: new Date().toISOString(),
+                    likes: 0,
+                    dislikes: 0
+                };
+                
+                renderDish(dishData);
+                currentDishId = dishId;
+                
+                // Carregar comentários
+                loadComments(dishId);
+                
+            } catch (error) {
+                console.error("Erro ao carregar dados do prato:", error);
+                dishContainer.innerHTML = `<div class="loading">Erro ao carregar informações do prato.</div>`;
+            }
+        }
         
-        // Formatar data para exibição
+        // Função para carregar comentários
+        async function loadComments(dishId) {
+            try {
+                // Substituir por chamada real ao seu backend ASP.NET
+                // const response = await fetch(`/api/dishes/${dishId}/comments`);
+                // const comments = await response.json();
+                
+                // Simulação enquanto não conecta com o backend
+                const comments = [
+                    {
+                        id: 1,
+                        author: "Usuário do Banco de Dados",
+                        text: "Comentário carregado do banco de dados",
+                        date: new Date().toISOString()
+                    }
+                ];
+                
+                renderComments(comments);
+                
+            } catch (error) {
+                console.error("Erro ao carregar comentários:", error);
+                commentsList.innerHTML = `<div class="loading">Erro ao carregar comentários.</div>`;
+            }
+        }
+        
+        // Função para renderizar o prato
+        function renderDish(dishData) {
+            const dishContent = dishTemplate.content.cloneNode(true);
+            
+            // Preencher os dados
+            dishContent.querySelector('.dish-image').src = dishData.imageUrl;
+            dishContent.querySelector('.dish-image').alt = dishData.name;
+            dishContent.querySelector('.dish-title').textContent = dishData.name;
+            dishContent.querySelector('.dish-author').textContent = dishData.author;
+            dishContent.querySelector('.publish-date').textContent = formatDate(dishData.publishDate);
+            dishContent.querySelector('.dish-description').textContent = dishData.description;
+            dishContent.querySelector('#like-count').textContent = dishData.likes;
+            dishContent.querySelector('#dislike-count').textContent = dishData.dislikes;
+            
+            // Configurar eventos
+            dishContent.querySelector('#like-btn').addEventListener('click', handleLike);
+            dishContent.querySelector('#dislike-btn').addEventListener('click', handleDislike);
+            
+            // Limpar e adicionar o conteúdo
+            dishContainer.innerHTML = '';
+            dishContainer.appendChild(dishContent);
+        }
+        
+        // Função para renderizar comentários
+        function renderComments(comments) {
+            commentsList.innerHTML = '';
+            
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<div class="loading">Nenhum comentário ainda. Seja o primeiro a comentar!</div>';
+                return;
+            }
+            
+            comments.forEach(comment => {
+                const commentContent = commentTemplate.content.cloneNode(true);
+                
+                // Preencher os dados
+                commentContent.querySelector('.comment-author').textContent = comment.author;
+                commentContent.querySelector('.comment-date').textContent = formatDate(comment.date);
+                commentContent.querySelector('.comment-text').textContent = comment.text;
+                
+                commentsList.appendChild(commentContent);
+            });
+        }
+        
+        // Função para formatar data
         function formatDate(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString('pt-BR') + ' às ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
         }
         
-        // Atualizar interface com os dados
-        function updateUI() {
-            document.getElementById('publish-date').textContent = formatDate(dishData.publishDate);
-            document.getElementById('like-count').textContent = dishData.likes;
-            document.getElementById('dislike-count').textContent = dishData.dislikes;
-            
-            // Atualizar comentários
-            commentsList.innerHTML = '';
-            dishData.comments.forEach(comment => {
-                const commentElement = document.createElement('div');
-                commentElement.className = 'comment';
-                commentElement.innerHTML = `
-                    <div class="comment-header">
-                        <span class="comment-author">${comment.author}</span>
-                        <span class="comment-date">${formatDate(comment.date)}</span>
-                    </div>
-                    <p class="comment-text">${comment.text}</p>
-                    <div class="comment-actions">
-                        <span class="comment-action">Responder</span>
-                        <span class="comment-action">Reportar</span>
-                    </div>
-                `;
-                commentsList.appendChild(commentElement);
-            });
-            
-            // Mostrar/ocultar formulário de comentário baseado no login
-            if (isLoggedIn) {
-                commentForm.style.display = 'block';
-                loginMessage.style.display = 'none';
-            } else {
-                commentForm.style.display = 'none';
-                loginMessage.style.display = 'block';
-            }
-        }
-        
-        // Event Listeners
-        likeBtn.addEventListener('click', () => {
+        // Função para lidar com like
+        async function handleLike() {
             if (!isLoggedIn) {
                 alert('Você precisa estar logado para curtir.');
                 return;
             }
-            dishData.likes++;
-            updateUI();
-            // Aqui você faria uma chamada para o backend para atualizar o like
-        });
+            
+            try {
+                // Substituir por chamada real ao seu backend ASP.NET
+                // const response = await fetch(`/api/dishes/${currentDishId}/like`, { method: 'POST' });
+                // const result = await response.json();
+                
+                // Simulação
+                const likesCount = document.getElementById('like-count');
+                likesCount.textContent = parseInt(likesCount.textContent) + 1;
+                
+            } catch (error) {
+                console.error("Erro ao registrar like:", error);
+                alert('Erro ao registrar like.');
+            }
+        }
         
-        dislikeBtn.addEventListener('click', () => {
+        // Função para lidar com dislike
+        async function handleDislike() {
             if (!isLoggedIn) {
                 alert('Você precisa estar logado para dar dislike.');
                 return;
             }
-            dishData.dislikes++;
-            updateUI();
-            // Aqui você faria uma chamada para o backend para atualizar o dislike
-        });
+            
+            try {
+                // Substituir por chamada real ao seu backend ASP.NET
+                // const response = await fetch(`/api/dishes/${currentDishId}/dislike`, { method: 'POST' });
+                // const result = await response.json();
+                
+                // Simulação
+                const dislikesCount = document.getElementById('dislike-count');
+                dislikesCount.textContent = parseInt(dislikesCount.textContent) + 1;
+                
+            } catch (error) {
+                console.error("Erro ao registrar dislike:", error);
+                alert('Erro ao registrar dislike.');
+            }
+        }
         
-        commentForm.addEventListener('submit', (e) => {
+        // Função para lidar com envio de comentário
+        async function handleCommentSubmit(e) {
             e.preventDefault();
             
             if (!isLoggedIn) {
@@ -445,34 +506,72 @@
                 return;
             }
             
-            if (commentText.value.trim() === '') {
+            if (!commentText.value.trim()) {
                 alert('Por favor, digite seu comentário.');
                 return;
             }
             
-            // Adicionar novo comentário (simulado)
-            const newComment = {
-                id: Date.now(),
-                author: currentUser || "Usuário Anônimo",
-                date: new Date().toISOString(),
-                text: commentText.value,
-                replies: []
-            };
-            
-            dishData.comments.unshift(newComment);
-            commentText.value = '';
-            updateUI();
-            
-            // Aqui você faria uma chamada para o backend para salvar o comentário
-        });
+            try {
+                // Substituir por chamada real ao seu backend ASP.NET
+                /*
+                const response = await fetch(`/api/dishes/${currentDishId}/comments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: commentText.value
+                    })
+                });
+                
+                const newComment = await response.json();
+                */
+                
+                // Simulação
+                const newComment = {
+                    id: Date.now(),
+                    author: currentUser || "Usuário Teste",
+                    text: commentText.value,
+                    date: new Date().toISOString()
+                };
+                
+                // Recarregar comentários (na implementação real, o backend retornaria a lista atualizada)
+                loadComments(currentDishId);
+                commentText.value = '';
+                
+            } catch (error) {
+                console.error("Erro ao enviar comentário:", error);
+                alert('Erro ao enviar comentário.');
+            }
+        }
         
+        // Função para atualizar o estado de login na UI
+        function updateAuthUI() {
+            if (isLoggedIn) {
+                loginBtn.textContent = 'Logout';
+                registerBtn.style.display = 'none';
+                commentForm.style.display = 'block';
+                loginMessage.style.display = 'none';
+            } else {
+                loginBtn.textContent = 'Login';
+                registerBtn.style.display = 'inline-block';
+                commentForm.style.display = 'none';
+                loginMessage.style.display = 'block';
+            }
+        }
+        
+        // Event Listeners
         loginBtn.addEventListener('click', () => {
-            // Simulando login
-            isLoggedIn = true;
-            currentUser = "Usuário Teste";
-            loginBtn.textContent = 'Logout';
-            registerBtn.style.display = 'none';
-            updateUI();
+            if (isLoggedIn) {
+                // Logout
+                isLoggedIn = false;
+                currentUser = null;
+            } else {
+                // Simulando login (substituir por sua lógica real)
+                isLoggedIn = true;
+                currentUser = "Usuário Teste";
+            }
+            updateAuthUI();
         });
         
         registerBtn.addEventListener('click', () => {
@@ -489,20 +588,18 @@
             registerBtn.click();
         });
         
-        // Logout (quando clicar no botão de login já estando logado)
-        loginBtn.addEventListener('click', function() {
-            if (isLoggedIn) {
-                isLoggedIn = false;
-                currentUser = null;
-                loginBtn.textContent = 'Login';
-                registerBtn.style.display = 'inline-block';
-                updateUI();
-            }
-        });
+        commentForm.addEventListener('submit', handleCommentSubmit);
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            updateUI();
+            updateAuthUI();
+            
+            // Obter ID do prato da URL (simulação)
+            const urlParams = new URLSearchParams(window.location.search);
+            const dishId = urlParams.get('id') || 1;
+            
+            // Carregar dados do prato
+            loadDishData(dishId);
         });
     </script>
 </body>
