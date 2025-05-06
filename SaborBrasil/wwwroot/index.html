@@ -258,7 +258,10 @@
         <div class="logo">Sabor do Brasil</div>
         <div class="auth-buttons">
             <button id="login-btn">Login</button>
-            <button id="register-btn">Cadastrar</button>
+
+            
+
+            <a href="Cadastro.html"><button id="register-btn" >Cadastrar</button></a>
         </div>
     </header>
     
@@ -574,9 +577,7 @@
             updateAuthUI();
         });
         
-        registerBtn.addEventListener('click', () => {
-            alert('Redirecionar para página de cadastro');
-        });
+        
         
         loginLink.addEventListener('click', (e) => {
             e.preventDefault();
