@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SaborBrasil.Data;
-
+using SaborBrasil.Models; // Certifique-se de importar o namespace correto
 
 public class UsuarioController : Controller
 {
@@ -12,16 +12,15 @@ public class UsuarioController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Cadastrar(Usuario usuario)
+    public IActionResult Cadastrar(Usuario usuario)
     {
         if (ModelState.IsValid)
         {
             _context.Usuarios.Add(usuario);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Home");
-
+            _context.SaveChanges();
+            return Redirect("/index.html"); // Redireciona para o index.html após o cadastro
         }
-        
-        return View(usuario);
+
+        return View("Erro"); // Exibe uma página de erro se algo der errado
     }
 }
