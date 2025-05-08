@@ -23,4 +23,25 @@ public class UsuarioController : Controller
 
         return View("Erro"); // Exibe uma página de erro se algo der errado
     }
+    [HttpPost("Login")]
+    public IActionResult Login([FromBody] Usuario usuario)
+    {
+        // Busca o usuário no banco de dados pelo e-mail
+        var usuarioExistente = _context.Usuarios
+            .FirstOrDefault(u => u.Email.ToLower() == usuario.Email.ToLower());
+
+        if (usuarioExistente == null)
+        {
+            return BadRequest(new { message = "Usuário não encontrado." });
+        }
+
+        // Verifica se a senha está correta
+        if (usuarioExistente.Senha != usuario.Senha)
+        {
+            return BadRequest(new { message = "Senha incorreta." });
+        }
+
+        // Retorna sucesso (você pode adicionar um token JWT aqui, se necessário)
+        return Redirect("/index.html");
+    }
 }

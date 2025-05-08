@@ -142,7 +142,7 @@
         
         <div id="message" class="alert" style="display: none;"></div>
         
-        <form id="login-form">
+        <form id="login-form" method="POST" action="/Usuario/Login">
             <div class="form-group">
                 <label for="Email">E-mail</label>
                 <input type="email" id="Email" name="Email" class="form-control" required>
@@ -172,7 +172,7 @@
             messageDiv.style.display = 'none';
             
             try {
-                const response = await fetch('https://seusite.com/api/Usuarios/Login', {
+                const response = await fetch('/Usuario/Login', { // Ajuste para a porta correta
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

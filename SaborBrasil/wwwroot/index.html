@@ -565,23 +565,7 @@
         
         // Event Listeners
         loginBtn.addEventListener('click', () => {
-            if (isLoggedIn) {
-                // Logout
-                isLoggedIn = false;
-                currentUser = null;
-            } else {
-                // Simulando login (substituir por sua lógica real)
-                isLoggedIn = true;
-                currentUser = "Usuário Teste";
-            }
-            updateAuthUI();
-        });
-        
-        
-        
-        loginLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginBtn.click();
+            window.location.href = 'login.html'; // Redireciona para login.html
         });
         
         registerLink.addEventListener('click', (e) => {
