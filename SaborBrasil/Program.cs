@@ -13,6 +13,14 @@ var app = builder.Build();
 
 app.UseStaticFiles(); // Permite servir arquivos da pasta wwwroot
 
+// Redireciona a rota raiz para index.html
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/index.html");
+    return Task.CompletedTask;
+});
+
+
 app.MapDefaultControllerRoute(); // Configura as rotas padrão para os controladores
 
 app.Run();
