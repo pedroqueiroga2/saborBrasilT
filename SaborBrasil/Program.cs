@@ -9,21 +9,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
-});
-
 var app = builder.Build();
 
 app.UseStaticFiles(); // Permite servir arquivos da pasta wwwroot
-
-app.UseCors("AllowAll");
 
 app.MapDefaultControllerRoute(); // Configura as rotas padrão para os controladores
 

@@ -172,7 +172,7 @@
             messageDiv.style.display = 'none';
             
             try {
-                const response = await fetch('/Usuario/Login', { // Ajuste para a porta correta
+                const response = await fetch('http://localhost:5172/Usuario/Login', { // Ajuste a porta se necessário
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -190,15 +190,13 @@
                     messageDiv.textContent = 'Login realizado com sucesso! Redirecionando...';
                     messageDiv.className = 'alert alert-success';
                     messageDiv.style.display = 'block';
-                    
-                    // Armazenar o token (se usar JWT)
-                    if (data.token) {
-                        localStorage.setItem('authToken', data.token);
-                    }
-                    
+
+                    // Armazenar o estado de login no localStorage
+                    localStorage.setItem('isLoggedIn', 'true'); // Define que o usuário está logado
+
                     // Redirecionar após 1 segundo
                     setTimeout(() => {
-                        window.location.href = 'perfil.html';
+                        window.location.href = 'index.html'; // Redireciona para o index.html
                     }, 1000);
                 } else {
                     // Exibir mensagem de erro

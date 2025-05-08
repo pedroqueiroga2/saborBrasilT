@@ -257,11 +257,8 @@
     <header>
         <div class="logo">Sabor do Brasil</div>
         <div class="auth-buttons">
-            <button id="login-btn">Login</button>
-
-            
-
-            <a href="Cadastro.html"><button id="register-btn" >Cadastrar</button></a>
+            <button id="login-btn" onclick="window.location.href='login.html'">Login</button>
+            <button id="logout-btn" style="display: none;">Sair</button>
         </div>
     </header>
     
@@ -340,6 +337,7 @@
         const registerBtn = document.getElementById('register-btn');
         const loginLink = document.getElementById('login-link');
         const registerLink = document.getElementById('register-link');
+        const logoutBtn = document.getElementById('logout-btn');
         
         // Templates
         const dishTemplate = document.getElementById('dish-template');
@@ -551,12 +549,14 @@
         // Função para atualizar o estado de login na UI
         function updateAuthUI() {
             if (isLoggedIn) {
-                loginBtn.textContent = 'Logout';
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
                 registerBtn.style.display = 'none';
                 commentForm.style.display = 'block';
                 loginMessage.style.display = 'none';
             } else {
-                loginBtn.textContent = 'Login';
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
                 registerBtn.style.display = 'inline-block';
                 commentForm.style.display = 'none';
                 loginMessage.style.display = 'block';
@@ -577,6 +577,26 @@
         
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
+            const isLoggedIn = localStorage.getItem('isLoggedIn'); // Verifica o estado de login
+            const loginButton = document.getElementById('login-btn');
+            const logoutButton = document.getElementById('logout-btn');
+
+            if (isLoggedIn === 'true') {
+                // Usuário está logado
+                loginButton.style.display = 'none'; // Esconde o botão de login
+                logoutButton.style.display = 'block'; // Exibe o botão de logout
+            } else {
+                // Usuário não está logado
+                loginButton.style.display = 'block'; // Exibe o botão de login
+                logoutButton.style.display = 'none'; // Esconde o botão de logout
+            }
+
+            // Adiciona evento ao botão de logout
+            logoutButton.addEventListener('click', () => {
+                localStorage.removeItem('isLoggedIn'); // Remove o estado de login
+                window.location.reload(); // Recarrega a página
+            });
+            
             updateAuthUI();
             
             // Obter ID do prato da URL (simulação)
