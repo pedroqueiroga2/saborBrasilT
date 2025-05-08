@@ -67,6 +67,22 @@
         color: var(--white); /* Cor do texto ao passar o mouse */
       }
 
+      #add-dish-btn {
+        background-color: white; /* Cor branca */
+        color: var(--primary-color); /* Cor do texto */
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 50%; /* Botão circular */
+        font-size: 1.5rem; /* Tamanho do ícone */
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      #add-dish-btn:hover {
+        background-color: #f0f0f0; /* Cor ao passar o mouse */
+      }
+
       .dish-container {
         background-color: var(--white);
         border-radius: 8px;
@@ -274,6 +290,13 @@
           Cadastrar
         </button>
         <button id="logout-btn" style="display: none">Sair</button>
+        <button
+          id="add-dish-btn"
+          style="display: none"
+          onclick="window.location.href='Cadastro de Produto.html'"
+        >
+          +
+        </button>
       </div>
     </header>
 
@@ -620,17 +643,20 @@
         const loginButton = document.getElementById("login-btn");
         const registerButton = document.getElementById("register-btn");
         const logoutButton = document.getElementById("logout-btn");
+        const addDishButton = document.getElementById("add-dish-btn");
 
         if (isLoggedIn === "true") {
           // Usuário está logado
           loginButton.style.display = "none"; // Esconde o botão de login
           registerButton.style.display = "none"; // Esconde o botão de cadastrar
           logoutButton.style.display = "block"; // Exibe o botão de logout
+          addDishButton.style.display = "block"; // Exibe o botão de adicionar prato
         } else {
           // Usuário não está logado
           loginButton.style.display = "block"; // Exibe o botão de login
           registerButton.style.display = "block"; // Exibe o botão de cadastrar
           logoutButton.style.display = "none"; // Esconde o botão de logout
+          addDishButton.style.display = "none"; // Esconde o botão de adicionar prato
         }
 
         // Adiciona evento ao botão de logout
