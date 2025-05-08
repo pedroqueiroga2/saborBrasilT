@@ -130,6 +130,23 @@
 
             <button type="submit" class="btn-submit">Cadastrar</button>
         </form>
+        
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); // Impede o envio padrão do formulário
+
+                // Simula o cadastro (aqui você pode adicionar lógica para salvar os dados no backend)
+                alert('Cadastro realizado com sucesso!');
+
+                // Redireciona para o index.html
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
 </body>
 </html>

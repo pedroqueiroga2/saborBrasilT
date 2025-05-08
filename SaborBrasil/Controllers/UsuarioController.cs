@@ -12,7 +12,7 @@ public class UsuarioController : Controller
         _context = context;
     }
 
-    [HttpPost]
+    [HttpPost("Cadastrar")]
     public IActionResult Cadastrar(Usuario usuario)
     {
         if (ModelState.IsValid)
