@@ -274,6 +274,38 @@
         padding: 20px;
         color: var(--dark-gray);
       }
+
+      .dish-card {
+        background-color: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .dish-card h2 {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+      }
+
+      .dish-card p {
+        margin-bottom: 10px;
+        color: var(--text-color);
+      }
+
+      .dish-card img {
+        max-width: 200px;
+        border-radius: 4px;
+        margin-top: 10px;
+      }
+
+      .dish-card hr {
+        border: 0;
+        height: 1px;
+        background: var(--light-gray);
+        margin: 10px 0;
+      }
     </style>
   </head>
   <body>
@@ -331,6 +363,12 @@
           <div class="loading">Carregando comentários...</div>
         </div>
       </div>
+
+      <!-- Lista de Pratos (para usuários não logados) -->
+      <div id="dish-list" class="dish-list">
+        <h2 class="section-title">Pratos em Destaque</h2>
+        <div class="loading">Carregando pratos...</div>
+      </div>
     </div>
 
     <!-- Template para o prato (usado pelo JavaScript) -->
@@ -385,6 +423,7 @@
       const loginLink = document.getElementById("login-link");
       const registerLink = document.getElementById("register-link");
       const logoutBtn = document.getElementById("logout-btn");
+      const dishList = document.getElementById("dish-list");
 
       // Templates
       const dishTemplate = document.getElementById("dish-template");
@@ -624,6 +663,34 @@
           loginMessage.style.display = "block";
         }
       }
+
+      // Carregar pratos em destaque para usuários não logados
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const response = await fetch("/api/publicacoes/Listar");
+          const publicacoes = await response.json();
+
+          dishList.innerHTML = ""; // Limpa o container
+
+          publicacoes.forEach((pub) => {
+            const div = document.createElement("div");
+            div.className = "dish-card";
+            div.innerHTML = `
+              <h2>${pub.nome}</h2>
+              <p>${pub.descricao}</p>
+              ${
+                pub.imagem
+                  ? `<img src="${pub.imagem}" alt="${pub.nome}" style="max-width:200px;">`
+                  : ""
+              }
+              <hr>
+            `;
+            dishList.appendChild(div);
+          });
+        } catch (err) {
+          dishList.innerHTML = "<p>Erro ao carregar publicações.</p>";
+        }
+      });
 
       // Event Listeners
       loginBtn.addEventListener("click", () => {

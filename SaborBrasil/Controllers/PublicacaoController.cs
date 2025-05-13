@@ -50,4 +50,13 @@ public class PublicacaoController : ControllerBase
         }
         
     }
+
+    [HttpGet("Listar")]
+    public IActionResult Listar()
+    {
+        var publicacoes = _context.Publicacoes
+            .OrderByDescending(p => p.DataPublicao)
+            .ToList();
+        return Ok(publicacoes);
+    }
 }
