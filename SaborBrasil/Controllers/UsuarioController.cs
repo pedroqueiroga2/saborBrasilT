@@ -32,29 +32,22 @@ public class UsuarioController : Controller
     [HttpPost("Login")] // Define que este método será acessado via POST em /Usuario/Login
     public IActionResult Login([FromBody] Usuario usuario)
     {
-        // Verifica se o e-mail foi enviado
         if (string.IsNullOrEmpty(usuario.Email) || string.IsNullOrEmpty(usuario.Senha))
-        {
             return BadRequest(new { message = "E-mail e senha são obrigatórios." });
-        }
 
-        // Busca o usuário no banco de dados pelo e-mail
         var usuarioExistente = _context.Usuarios
             .FirstOrDefault(u => u.Email.ToLower() == usuario.Email.ToLower());
 
         if (usuarioExistente == null)
-        {
             return BadRequest(new { message = "Usuário não encontrado." });
-        }
 
-        // Verifica se a senha está correta
         if (usuarioExistente.Senha != usuario.Senha)
-        {
             return BadRequest(new { message = "Senha incorreta." });
-        }
 
-        // Retorna sucesso
-        return Ok(new { message = "Login realizado com sucesso!" });
-        
+        // Retorne o idusuario!
+        return Ok(new { 
+            message = "Login realizado com sucesso!",
+            idusuario = usuarioExistente.IdUsuario // <-- ESSA LINHA É FUNDAMENTAL
+        });
     }
 }

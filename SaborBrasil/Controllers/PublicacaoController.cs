@@ -33,8 +33,7 @@ public class PublicacaoController : ControllerBase
                 publicacao.Imagem = "/uploads/" + imagem.FileName;
             }
 
-            // Para teste, defina um usuário existente no banco
-            publicacao.UsuarioId = 1;
+            
 
             Console.WriteLine($"Nome: {publicacao.Nome}, Descricao: {publicacao.Descricao}, Imagem: {publicacao.Imagem}");
 
@@ -58,5 +57,43 @@ public class PublicacaoController : ControllerBase
             .OrderByDescending(p => p.DataPublicao)
             .ToList();
         return Ok(publicacoes);
+    }
+
+    public class LikeRequest
+    {
+        public int idPost { get; set; }
+        public int idUsuario { get; set; }
+    }
+
+    [HttpPost("Like")]
+    public IActionResult Like([FromBody] LikeRequest req)
+    {
+        var jaCurtiu = _context.Likes.Any(l => l.IdUsuario == req.idUsuario && l.IdPost == req.idPost);
+        if (jaCurtiu)
+            return BadRequest(new { message = "Você já curtiu esta publicação." });
+
+        var like = new Like { IdUsuario = req.idUsuario, IdPost = req.idPost };
+        _context.Likes.Add(like);
+        _context.SaveChanges();
+        return Ok(new { message = "Like registrado!" });
+    }
+
+    [HttpPost("Dislike")]
+    public IActionResult Dislike([FromBody] LikeRequest req)
+    {
+        var like = _context.Likes.FirstOrDefault(l => l.IdUsuario == req.idUsuario && l.IdPost == req.idPost);
+        if (like == null)
+            return BadRequest(new { message = "Você ainda não curtiu esta publicação." });
+
+        _context.Likes.Remove(like);
+        _context.SaveChanges();
+        return Ok(new { message = "Like removido!" });
+    }
+
+    [HttpGet("LikesCount/{idPost}")]
+    public IActionResult LikesCount(int idPost)
+    {
+        var count = _context.Likes.Count(l => l.IdPost == idPost);
+        return Ok(new { likes = count });
     }
 }

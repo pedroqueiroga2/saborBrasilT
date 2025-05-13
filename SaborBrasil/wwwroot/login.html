@@ -193,7 +193,7 @@
 
                     // Armazenar o estado de login no localStorage
                     localStorage.setItem('isLoggedIn', 'true'); // Define que o usuário está logado
-
+                    localStorage.setItem('userId', data.idusuario);
                     // Redirecionar após 1 segundo
                     setTimeout(() => {
                         window.location.href = 'index.html'; // Redireciona para o index.html

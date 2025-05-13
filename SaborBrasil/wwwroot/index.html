@@ -384,13 +384,13 @@
         </div>
         <p class="dish-description"></p>
         <div class="dish-actions">
-          <button class="action-btn like-btn" id="like-btn">
+          <button class="action-btn like-btn" data-id="{{idPost}}">
             <span>👍</span>
-            <span class="action-count" id="like-count">0</span>
+            <span class="action-count like-count" data-id="{{idPost}}">0</span>
           </button>
-          <button class="action-btn dislike-btn" id="dislike-btn">
+          <button class="action-btn dislike-btn" data-id="{{idPost}}">
             <span>👎</span>
-            <span class="action-count" id="dislike-count">0</span>
+            <span class="action-count dislike-count" data-id="{{idPost}}">0</span>
           </button>
         </div>
       </div>
@@ -647,24 +647,14 @@
         }
       }
 
-      // Função para atualizar o estado de login na UI
-      function updateAuthUI() {
-        if (isLoggedIn) {
-          loginBtn.style.display = "none";
-          logoutBtn.style.display = "block";
-          registerBtn.style.display = "none";
-          commentForm.style.display = "block";
-          loginMessage.style.display = "none";
-        } else {
-          loginBtn.style.display = "block";
-          logoutBtn.style.display = "none";
-          registerBtn.style.display = "inline-block";
-          commentForm.style.display = "none";
-          loginMessage.style.display = "block";
-        }
+      // Função para atualizar o contador de likes
+      async function updateLikeCount(idPost) {
+        const res = await fetch(`/api/publicacoes/LikesCount/${idPost}`);
+        const data = await res.json();
+        document.querySelector(`.like-count[data-id="${idPost}"]`).textContent = data.likes;
       }
 
-      // Carregar pratos em destaque para usuários não logados
+      // Carregar pratos em destaque para todos
       document.addEventListener("DOMContentLoaded", async () => {
         try {
           const response = await fetch("/api/publicacoes/Listar");
@@ -683,9 +673,40 @@
                   ? `<img src="${pub.imagem}" alt="${pub.nome}" style="max-width:200px;">`
                   : ""
               }
+              <div>
+                <button class="like-btn" data-id="${pub.idPost}">
+                  👍 Curtir <span class="like-count" data-id="${pub.idPost}">0</span>
+                </button>
+              </div>
               <hr>
             `;
             dishList.appendChild(div);
+
+            // Atualiza o contador de likes ao carregar
+            updateLikeCount(pub.idPost);
+
+            // Evento de like
+            if (localStorage.getItem("isLoggedIn") === "true") {
+              div.querySelector(".like-btn").addEventListener("click", async function () {
+                const idPost = this.getAttribute("data-id");
+                const idUsuario = localStorage.getItem("userId");
+                const res = await fetch("/api/publicacoes/Like", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ idPost, idUsuario }),
+                });
+                if (res.ok) {
+                  updateLikeCount(idPost);
+                } else {
+                  const data = await res.json();
+                  alert(data.message || "Erro ao curtir.");
+                }
+              });
+            } else {
+              // Se não estiver logado, desabilita o botão
+              div.querySelector(".like-btn").disabled = true;
+              div.querySelector(".like-btn").title = "Faça login para curtir";
+            }
           });
         } catch (err) {
           dishList.innerHTML = "<p>Erro ao carregar publicações.</p>";

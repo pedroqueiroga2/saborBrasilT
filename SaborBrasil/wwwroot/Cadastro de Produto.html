@@ -195,6 +195,7 @@
         e.preventDefault();
 
         const formData = new FormData(postForm);
+        formData.append("UsuarioId", localStorage.getItem("userId"));
 
         try {
           const response = await fetch("/api/publicacoes/Criarpublicacao", {
