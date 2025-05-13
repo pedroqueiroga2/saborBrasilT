@@ -15,14 +15,19 @@ public class UsuarioController : Controller
     [HttpPost("Cadastrar")]
     public IActionResult Cadastrar(Usuario usuario)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
-            return Redirect("/index.html"); // Redireciona para o index.html após o cadastro
+            // Loga todos os erros de validação
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine(error.ErrorMessage);
+            }
+            return View("Erro");
         }
 
-        return View("Erro"); // Exibe uma página de erro se algo der errado
+        _context.Usuarios.Add(usuario);
+        _context.SaveChanges();
+        return Redirect("/index.html"); // Redireciona para o index.html após o cadastro
     }
     [HttpPost("Login")] // Define que este método será acessado via POST em /Usuario/Login
     public IActionResult Login([FromBody] Usuario usuario)
@@ -50,6 +55,6 @@ public class UsuarioController : Controller
 
         // Retorna sucesso
         return Ok(new { message = "Login realizado com sucesso!" });
-        return Redirect("/index.html"); // Redireciona para o index.html após o login
+        
     }
 }

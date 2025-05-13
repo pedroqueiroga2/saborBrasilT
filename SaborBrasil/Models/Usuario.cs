@@ -14,21 +14,21 @@ namespace SaborBrasil.Models
         public string? Nome { get; set; }
 
         [Required]
-        [Column("CPF")] // Mapeia para a coluna "CPF"
-        public string CPF { get; set; }
+        [Column("cpf")] // Mapeia para a coluna "cpf"
+        public string? Cpf { get; set; }
 
         [Required]
         [Column("senha")] // Mapeia para a coluna "senha"
-        public string Senha { get; set; }
+        public string? Senha { get; set; }
 
         [Required]
         [Column("telefone")] // Mapeia para a coluna "telefone"
-        public string Telefone { get; set; }
+        public string? Telefone { get; set; }
 
         [Column("email")] // Mapeia para a coluna "email"
         public string? Email { get; set; }
 
         [Column("created_at")] // Mapeia para a coluna "created_at"
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

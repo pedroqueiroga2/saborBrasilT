@@ -7,6 +7,7 @@ namespace SaborBrasil.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
+         public DbSet<Publicacao> Publicacoes { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
