@@ -77,17 +77,18 @@ public class PublicacaoController : ControllerBase
         _context.SaveChanges();
         return Ok(new { message = "Like registrado!" });
     }
+    
 
-    [HttpPost("Dislike")]
-    public IActionResult Dislike([FromBody] LikeRequest req)
+    [HttpDelete("Like")]
+    public IActionResult RemoverLike([FromBody] LikeRequest req)
     {
         var like = _context.Likes.FirstOrDefault(l => l.IdUsuario == req.idUsuario && l.IdPost == req.idPost);
         if (like == null)
-            return BadRequest(new { message = "Você ainda não curtiu esta publicação." });
+            return NotFound(new { message = "Like não encontrado." });
 
         _context.Likes.Remove(like);
         _context.SaveChanges();
-        return Ok(new { message = "Like removido!" });
+        return Ok(new { message = "Like removido com sucesso." });
     }
 
     [HttpGet("LikesCount/{idPost}")]

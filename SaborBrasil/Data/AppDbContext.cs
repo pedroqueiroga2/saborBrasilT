@@ -11,11 +11,17 @@ namespace SaborBrasil.Data
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Like> Likes { get; set; }
 
+        public DbSet<Comentario> Comentarios { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configura explicitamente o nome da tabela como "Usuario"
             modelBuilder.Entity<Usuario>().ToTable("Usuario");
+
+             modelBuilder.Entity<Comentario>().ToTable("comentarios");
+        modelBuilder.Entity<Comentario>().HasKey(c => c.IdComentario);
         }
+
+        
     }
 }
 

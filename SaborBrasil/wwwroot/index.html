@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detalhes do Prato - Sabor do Brasil</title>
+    <title>Sabor do Brasil - Pratos e Comentários</title>
     <style>
       :root {
         --primary-color: #d97014;
@@ -13,298 +13,208 @@
         --white: #fff;
         --dark-gray: #555;
         --light-gray: #eee;
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
       }
 
       body {
-        background-color: var(--light-color);
+        background: var(--light-color);
         color: var(--text-color);
-        line-height: 1.6;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      header {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+
+      .logo {
+        font-size: 2rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+
+      .auth-buttons button {
+        background: var(--white);
+        color: var(--primary-color);
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        font-weight: bold;
+        margin-left: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+      .auth-buttons button:hover {
+        background: var(--primary-color);
+        color: var(--white);
       }
 
       .container {
         max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
+        margin: 30px auto;
+        padding: 0 20px;
       }
 
-      header {
-        background-color: var(--primary-color);
-        color: var(--white);
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
+      .dish-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
       }
 
-      .logo {
-        font-weight: bold;
-        font-size: 1.5rem;
-      }
-      .auth-buttons {
-        display: flex;
-        gap: 10px; /* Espaço entre os botões */
-      }
-      .auth-buttons button {
-        background-color: var(--white);
-        color: var(--primary-color);
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        margin-left: 1rem;
-      }
-      .auth-buttons button:hover {
-        background-color: #bbbbbb; /* Cor original ao passar o mouse */
-        color: var(--white); /* Cor do texto ao passar o mouse */
-      }
-
-      #add-dish-btn {
-        background-color: white; /* Cor branca */
-        color: var(--primary-color); /* Cor do texto */
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 50%; /* Botão circular */
-        font-size: 1.5rem; /* Tamanho do ícone */
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-
-      #add-dish-btn:hover {
-        background-color: #f0f0f0; /* Cor ao passar o mouse */
-      }
-
-      .dish-container {
-        background-color: var(--white);
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      .dish-card {
+        background: var(--white);
+        border-radius: 18px;
+        box-shadow: var(--card-shadow);
         overflow: hidden;
-        margin-bottom: 30px;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.15s;
+        margin-bottom: 2rem;
       }
-
+      .dish-card:hover {
+        transform: translateY(-6px) scale(1.01);
+        box-shadow: 0 8px 32px rgba(217, 112, 20, 0.1);
+      }
       .dish-image {
         width: 100%;
-        height: 400px;
+        height: 220px;
         object-fit: cover;
-        background-color: var(--secondary-color);
+        background: var(--secondary-color);
       }
-
       .dish-content {
-        padding: 30px;
-      }
-
-      .dish-header {
+        padding: 1.5rem;
+        flex: 1;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        border-bottom: 1px solid var(--light-gray);
-        padding-bottom: 20px;
+        flex-direction: column;
       }
-
       .dish-title {
-        font-size: 2rem;
+        font-size: 1.4rem;
         color: var(--primary-color);
-      }
-
-      .dish-meta {
-        color: var(--dark-gray);
-        font-size: 0.9rem;
-      }
-
-      .dish-author {
+        margin-bottom: 0.5rem;
         font-weight: bold;
       }
-
-      .dish-description {
-        margin-bottom: 30px;
-        font-size: 1.1rem;
+      .dish-meta {
+        font-size: 0.95rem;
+        color: var(--dark-gray);
+        margin-bottom: 1rem;
       }
-
+      .dish-description {
+        margin-bottom: 1.2rem;
+        color: var(--text-color);
+        font-size: 1.08rem;
+      }
       .dish-actions {
         display: flex;
-        gap: 20px;
-        margin-bottom: 30px;
+        gap: 18px;
+        margin-bottom: 1.2rem;
       }
-
       .action-btn {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
+        background: var(--light-gray);
+        color: var(--primary-color);
         border: none;
         border-radius: 4px;
-        cursor: pointer;
+        padding: 0.5rem 1rem;
         font-weight: bold;
-        background-color: var(--light-gray);
-        color: var(--text-color);
-        transition: all 0.3s;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.2s;
       }
-
       .action-btn:hover {
-        transform: translateY(-2px);
+        background: var(--primary-color);
+        color: var(--white);
+      }
+      .like-count,
+      .dislike-count {
+        font-size: 1rem;
+        font-weight: bold;
       }
 
-      .like-btn {
-        background-color: rgba(0, 128, 0, 0.1);
-        color: green;
-      }
-
-      .dislike-btn {
-        background-color: rgba(255, 0, 0, 0.1);
-        color: red;
-      }
-
-      .action-count {
-        font-size: 0.9rem;
-      }
-
+      /* Comentários */
       .comments-section {
-        background-color: var(--white);
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 30px;
+        background: var(--light-gray);
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        margin-top: 1.5rem;
       }
-
       .section-title {
-        font-size: 1.5rem;
         color: var(--primary-color);
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid var(--primary-color);
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
       }
-
       .comment-form {
-        margin-bottom: 30px;
+        margin-bottom: 1.2rem;
       }
-
       .comment-input {
         width: 100%;
-        padding: 15px;
+        padding: 0.8rem;
         border: 1px solid var(--secondary-color);
         border-radius: 4px;
         font-size: 1rem;
-        margin-bottom: 15px;
-        min-height: 100px;
+        margin-bottom: 0.7rem;
+        min-height: 70px;
         resize: vertical;
       }
-
       .submit-comment {
-        background-color: var(--primary-color);
+        background: var(--primary-color);
         color: var(--white);
         border: none;
-        padding: 12px 25px;
+        padding: 0.6rem 1.5rem;
         border-radius: 4px;
-        cursor: pointer;
         font-weight: bold;
         font-size: 1rem;
-        transition: background-color 0.3s;
+        cursor: pointer;
+        transition: background 0.2s;
       }
-
       .submit-comment:hover {
-        background-color: #c05e0c;
+        background: #c05e0c;
       }
-
       .comments-list {
-        margin-top: 30px;
+        margin-top: 1rem;
       }
-
       .comment {
-        border-bottom: 1px solid var(--light-gray);
-        padding: 20px 0;
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+        padding: 1rem 1.2rem;
+        margin-bottom: 1rem;
       }
-
-      .comment:last-child {
-        border-bottom: none;
-      }
-
       .comment-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 0.5rem;
       }
-
       .comment-author {
         font-weight: bold;
         color: var(--primary-color);
       }
-
       .comment-date {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         color: var(--dark-gray);
       }
-
       .comment-text {
-        margin-bottom: 10px;
-      }
-
-      .comment-actions {
-        display: flex;
-        gap: 15px;
-      }
-
-      .comment-action {
-        font-size: 0.8rem;
-        color: var(--dark-gray);
-        cursor: pointer;
-      }
-
-      .comment-action:hover {
-        text-decoration: underline;
-      }
-
-      .login-message {
-        color: var(--primary-color);
-        margin-bottom: 20px;
-        font-weight: bold;
-      }
-
-      .loading {
-        text-align: center;
-        padding: 20px;
-        color: var(--dark-gray);
-      }
-
-      .dish-card {
-        background-color: var(--white);
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        margin-bottom: 20px;
-      }
-
-      .dish-card h2 {
-        font-size: 1.5rem;
-        color: var(--primary-color);
-        margin-bottom: 10px;
-      }
-
-      .dish-card p {
-        margin-bottom: 10px;
+        margin-bottom: 0.5rem;
         color: var(--text-color);
       }
-
-      .dish-card img {
-        max-width: 200px;
-        border-radius: 4px;
-        margin-top: 10px;
+      .login-message {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-weight: bold;
       }
-
-      .dish-card hr {
-        border: 0;
-        height: 1px;
-        background: var(--light-gray);
-        margin: 10px 0;
+      .loading {
+        text-align: center;
+        color: var(--dark-gray);
+        padding: 1.5rem 0;
       }
     </style>
   </head>
@@ -331,221 +241,280 @@
         </button>
       </div>
     </header>
-
     <div class="container">
-      <!-- Container do Prato (dados serão injetados via JavaScript) -->
-      <div class="dish-container" id="dish-container">
-        <div class="loading">Carregando informações do prato...</div>
-      </div>
-
-      <!-- Seção de Comentários -->
-      <div class="comments-section">
-        <h2 class="section-title">Comentários</h2>
-
-        <div id="login-message" class="login-message" style="display: none">
-          Você precisa estar logado para comentar.
-          <a href="#" id="login-link">Faça login</a> ou
-          <a href="#" id="register-link">cadastre-se</a>.
-        </div>
-
-        <form class="comment-form" id="comment-form" style="display: none">
-          <textarea
-            class="comment-input"
-            id="comment-text"
-            placeholder="Adicione seu comentário..."
-          ></textarea>
-          <button type="submit" class="submit-comment">
-            Enviar Comentário
-          </button>
-        </form>
-
-        <div class="comments-list" id="comments-list">
-          <div class="loading">Carregando comentários...</div>
-        </div>
-      </div>
-
-      <!-- Lista de Pratos (para usuários não logados) -->
+      <h2 class="section-title" style="font-size:2rem;">Pratos em Destaque</h2>
       <div id="dish-list" class="dish-list">
-        <h2 class="section-title">Pratos em Destaque</h2>
         <div class="loading">Carregando pratos...</div>
       </div>
     </div>
-
-    <!-- Template para o prato (usado pelo JavaScript) -->
-    <template id="dish-template">
-      <img class="dish-image" src="" alt="Imagem do prato" />
-      <div class="dish-content">
-        <div class="dish-header">
-          <h1 class="dish-title"></h1>
-          <div class="dish-meta">
-            Publicado por: <span class="dish-author"></span> em
-            <span class="publish-date"></span>
+    <template id="dish-card-template">
+      <div class="dish-card">
+        <img class="dish-image" src="" alt="Imagem do prato" />
+        <div class="dish-content">
+          <div class="dish-title"></div>
+          <div class="dish-meta"></div>
+          <div class="dish-description"></div>
+          <div class="dish-actions">
+            <button class="action-btn like-btn">
+              <span>👍</span> <span class="like-count">0</span>
+            </button>
+            <button class="action-btn dislike-btn">
+              <span>👎</span> <span class="dislike-count">0</span>
+            </button>
           </div>
-        </div>
-        <p class="dish-description"></p>
-        <div class="dish-actions">
-          <button class="action-btn like-btn" data-id="{{idPost}}">
-            <span>👍</span>
-            <span class="action-count like-count" data-id="{{idPost}}">0</span>
-          </button>
-          <button class="action-btn dislike-btn" data-id="{{idPost}}">
-            <span>👎</span>
-            <span class="action-count dislike-count" data-id="{{idPost}}">0</span>
-          </button>
+          <div class="comments-section">
+            <div class="section-title">Comentários</div>
+            <div class="login-message" style="display:none;">
+              Você precisa estar logado para comentar.
+              <a href="login.html">Faça login</a> ou
+              <a href="Cadastro.html">cadastre-se</a>.
+            </div>
+            <form class="comment-form" style="display:none;">
+              <textarea
+                class="comment-input"
+                placeholder="Adicione seu comentário..."
+              ></textarea>
+              <button type="submit" class="submit-comment">
+                Enviar Comentário
+              </button>
+            </form>
+            <div class="comments-list">
+              <div class="loading">Carregando comentários...</div>
+            </div>
+          </div>
         </div>
       </div>
     </template>
-
-    <!-- Template para comentários (usado pelo JavaScript) -->
     <template id="comment-template">
       <div class="comment">
         <div class="comment-header">
           <span class="comment-author"></span>
           <span class="comment-date"></span>
         </div>
-        <p class="comment-text"></p>
-        <div class="comment-actions">
-          <span class="comment-action">Responder</span>
-          <span class="comment-action">Reportar</span>
-        </div>
+        <div class="comment-text"></div>
       </div>
     </template>
-
     <script>
-      // Elementos do DOM
-      const dishContainer = document.getElementById("dish-container");
-      const commentsList = document.getElementById("comments-list");
-      const commentForm = document.getElementById("comment-form");
-      const commentText = document.getElementById("comment-text");
-      const loginMessage = document.getElementById("login-message");
+      // Estado de login
+      let isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      let currentUserId = localStorage.getItem("userId");
+
+      // Elementos
+      const dishList = document.getElementById("dish-list");
+      const dishCardTemplate = document.getElementById("dish-card-template");
+      const commentTemplate = document.getElementById("comment-template");
       const loginBtn = document.getElementById("login-btn");
       const registerBtn = document.getElementById("register-btn");
-      const loginLink = document.getElementById("login-link");
-      const registerLink = document.getElementById("register-link");
       const logoutBtn = document.getElementById("logout-btn");
-      const dishList = document.getElementById("dish-list");
+      const addDishBtn = document.getElementById("add-dish-btn");
 
-      // Templates
-      const dishTemplate = document.getElementById("dish-template");
-      const commentTemplate = document.getElementById("comment-template");
+      // Botões de autenticação
+      function updateAuthButtons() {
+        if (isLoggedIn) {
+          loginBtn.style.display = "none";
+          registerBtn.style.display = "none";
+          logoutBtn.style.display = "inline-block";
+          addDishBtn.style.display = "inline-block";
+        } else {
+          loginBtn.style.display = "inline-block";
+          registerBtn.style.display = "inline-block";
+          logoutBtn.style.display = "none";
+          addDishBtn.style.display = "none";
+        }
+      }
+      updateAuthButtons();
 
-      // Estado da aplicação
-      let isLoggedIn = false;
-      let currentUser = null;
-      let currentDishId = null; // Será obtido da URL ou parâmetro
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userId");
+        window.location.reload();
+      });
 
-      // Função para carregar os dados do prato (simulando chamada à API)
-      async function loadDishData(dishId) {
+      // Carregar pratos do backend
+      async function loadDishes() {
         try {
-          // Substituir por chamada real ao seu backend ASP.NET
-          // const response = await fetch(`/api/dishes/${dishId}`);
-          // const dishData = await response.json();
-
-          // Simulação enquanto não conecta com o backend
-          const dishData = {
-            id: dishId,
-            name: "Prato do Banco de Dados",
-            description: "Descrição carregada do banco de dados",
-            imageUrl:
-              "https://via.placeholder.com/1200x400?text=Imagem+do+Banco+de+Dados",
-            author: "Autor do Banco de Dados",
-            publishDate: new Date().toISOString(),
-            likes: 0,
-            dislikes: 0,
-          };
-
-          renderDish(dishData);
-          currentDishId = dishId;
-
-          // Carregar comentários
-          loadComments(dishId);
-        } catch (error) {
-          console.error("Erro ao carregar dados do prato:", error);
-          dishContainer.innerHTML = `<div class="loading">Erro ao carregar informações do prato.</div>`;
+          const response = await fetch("/api/publicacoes/Listar");
+          const pratos = await response.json();
+          dishList.innerHTML = "";
+          if (!pratos.length) {
+            dishList.innerHTML =
+              '<div class="loading">Nenhum prato cadastrado.</div>';
+            return;
+          }
+          for (const prato of pratos) {
+            await renderDishCard(prato);
+          }
+        } catch (err) {
+          dishList.innerHTML = '<div class="loading">Erro ao carregar pratos.</div>';
         }
       }
 
-      // Função para carregar comentários
-      async function loadComments(dishId) {
+      // Função para verificar se o usuário já curtiu
+      async function userLiked(postId, userId) {
+        const res = await fetch(`/api/publicacoes/UserLiked?postId=${postId}&userId=${userId}`);
+        if (!res.ok) return false;
+        const data = await res.json();
+        return data.liked; // true ou false
+      }
+
+      // Renderizar card do prato
+      async function renderDishCard(prato) {
+        const card = dishCardTemplate.content.cloneNode(true);
+        const img = card.querySelector(".dish-image");
+        const title = card.querySelector(".dish-title");
+        const meta = card.querySelector(".dish-meta");
+        const desc = card.querySelector(".dish-description");
+        const likeBtn = card.querySelector(".like-btn");
+        const dislikeBtn = card.querySelector(".dislike-btn");
+        const likeCount = card.querySelector(".like-count");
+        const dislikeCount = card.querySelector(".dislike-count");
+        const commentsSection = card.querySelector(".comments-section");
+        const loginMessage = commentsSection.querySelector(".login-message");
+        const commentForm = commentsSection.querySelector(".comment-form");
+        const commentInput = commentForm.querySelector(".comment-input");
+        const commentsList = commentsSection.querySelector(".comments-list");
+
+        // Dados do prato
+        img.src = prato.imagem || "https://via.placeholder.com/600x220?text=Sem+Imagem";
+        img.alt = prato.nome;
+        title.textContent = prato.nome;
+        meta.textContent = `Publicado por: ${prato.autor || "Desconhecido"} em ${formatDate(prato.dataPublicacao || prato.data || new Date())}`;
+        desc.textContent = prato.descricao;
+
+        // Carregar likes/dislikes do backend
         try {
-          // Substituir por chamada real ao seu backend ASP.NET
-          // const response = await fetch(`/api/dishes/${dishId}/comments`);
-          // const comments = await response.json();
-
-          // Simulação enquanto não conecta com o backend
-          const comments = [
-            {
-              id: 1,
-              author: "Usuário do Banco de Dados",
-              text: "Comentário carregado do banco de dados",
-              date: new Date().toISOString(),
-            },
-          ];
-
-          renderComments(comments);
-        } catch (error) {
-          console.error("Erro ao carregar comentários:", error);
-          commentsList.innerHTML = `<div class="loading">Erro ao carregar comentários.</div>`;
-        }
-      }
-
-      // Função para renderizar o prato
-      function renderDish(dishData) {
-        const dishContent = dishTemplate.content.cloneNode(true);
-
-        // Preencher os dados
-        dishContent.querySelector(".dish-image").src = dishData.imageUrl;
-        dishContent.querySelector(".dish-image").alt = dishData.name;
-        dishContent.querySelector(".dish-title").textContent = dishData.name;
-        dishContent.querySelector(".dish-author").textContent = dishData.author;
-        dishContent.querySelector(".publish-date").textContent = formatDate(
-          dishData.publishDate
-        );
-        dishContent.querySelector(".dish-description").textContent =
-          dishData.description;
-        dishContent.querySelector("#like-count").textContent = dishData.likes;
-        dishContent.querySelector("#dislike-count").textContent =
-          dishData.dislikes;
-
-        // Configurar eventos
-        dishContent
-          .querySelector("#like-btn")
-          .addEventListener("click", handleLike);
-        dishContent
-          .querySelector("#dislike-btn")
-          .addEventListener("click", handleDislike);
-
-        // Limpar e adicionar o conteúdo
-        dishContainer.innerHTML = "";
-        dishContainer.appendChild(dishContent);
-      }
-
-      // Função para renderizar comentários
-      function renderComments(comments) {
-        commentsList.innerHTML = "";
-
-        if (comments.length === 0) {
-          commentsList.innerHTML =
-            '<div class="loading">Nenhum comentário ainda. Seja o primeiro a comentar!</div>';
-          return;
+          const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
+          likeCount.textContent = data.likes ?? 0;
+          dislikeCount.textContent = data.dislikes ?? 0;
+        } catch {
+          likeCount.textContent = 0;
+          dislikeCount.textContent = 0;
         }
 
-        comments.forEach((comment) => {
-          const commentContent = commentTemplate.content.cloneNode(true);
+        let liked = false;
+        if (isLoggedIn) {
+          liked = await userLiked(prato.idPost, currentUserId);
+          if (liked) {
+            likeBtn.classList.add("liked");
+          }
+        }
 
-          // Preencher os dados
-          commentContent.querySelector(".comment-author").textContent =
-            comment.author;
-          commentContent.querySelector(".comment-date").textContent =
-            formatDate(comment.date);
-          commentContent.querySelector(".comment-text").textContent =
-            comment.text;
-
-          commentsList.appendChild(commentContent);
+        // Eventos de like/dislike
+        likeBtn.addEventListener("click", async () => {
+          if (!isLoggedIn) {
+            alert("Você precisa estar logado para curtir.");
+            return;
+          }
+          if (!liked) {
+            // Curtir
+            const res = await fetch("/api/publicacoes/Like", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ idPost: prato.idPost, idUsuario: currentUserId }),
+            });
+            if (res.ok) {
+              liked = true;
+              likeBtn.classList.add("liked");
+              const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
+              likeCount.textContent = data.likes;
+            } else {
+              alert("Você já curtiu esse prato.");
+            }
+          } else {
+            // Remover like
+            const res = await fetch("/api/publicacoes/Like", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ idPost: prato.idPost, idUsuario: currentUserId }),
+            });
+            if (res.ok) {
+              liked = false;
+              likeBtn.classList.remove("liked");
+              const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
+              likeCount.textContent = data.likes;
+            } else {
+              alert("Erro ao remover like.");
+            }
+          }
         });
+        dislikeBtn.addEventListener("click", async () => {
+          if (!isLoggedIn) {
+            alert("Você precisa estar logado para dar dislike.");
+            return;
+          }
+          // Implemente endpoint de dislike se necessário
+          alert("Funcionalidade de dislike não implementada.");
+        });
+
+        // Comentários
+        if (isLoggedIn) {
+          loginMessage.style.display = "none";
+          commentForm.style.display = "block";
+        } else {
+          loginMessage.style.display = "block";
+          commentForm.style.display = "none";
+        }
+
+        // Carregar comentários
+        loadComments(prato.idPost, commentsList);
+
+        // Enviar comentário
+        commentForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!commentInput.value.trim()) {
+            alert("Digite seu comentário.");
+            return;
+          }
+          try {
+            const res = await fetch("/api/comentarios", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                descricao: commentInput.value,
+                id_usuario: currentUserId,
+                post_id: prato.idPost,
+              }),
+            });
+            if (!res.ok) {
+              const data = await res.json();
+              throw new Error(data.message || "Erro ao comentar.");
+            }
+            commentInput.value = "";
+            loadComments(prato.idPost, commentsList);
+          } catch (err) {
+            alert("Erro ao enviar comentário.");
+          }
+        });
+
+        dishList.appendChild(card);
       }
 
-      // Função para formatar data
+      // Carregar comentários de um prato
+      async function loadComments(postId, commentsList) {
+        commentsList.innerHTML = '<div class="loading">Carregando comentários...</div>';
+        try {
+          const res = await fetch(`/api/comentarios?postId=${postId}`);
+          const comments = await res.json();
+          commentsList.innerHTML = "";
+          if (!comments.length) {
+            commentsList.innerHTML = '<div class="loading">Nenhum comentário ainda.</div>';
+            return;
+          }
+          comments.forEach((comment) => {
+            const c = commentTemplate.content.cloneNode(true);
+            c.querySelector(".comment-author").textContent = "Usuário"; // Troque pelo nome do usuário se desejar
+            c.querySelector(".comment-date").textContent = formatDate(
+              comment.created_At || comment.data || new Date()
+            );
+            c.querySelector(".comment-text").textContent = comment.descricao;
+            commentsList.appendChild(c);
+          });
+        } catch (err) {
+          commentsList.innerHTML = '<div class="loading">Erro ao carregar comentários.</div>';
+        }
+      }
+
+      // Formatar data
       function formatDate(dateString) {
         const date = new Date(dateString);
         return (
@@ -558,201 +527,8 @@
         );
       }
 
-      // Função para lidar com like
-      async function handleLike() {
-        if (!isLoggedIn) {
-          alert("Você precisa estar logado para curtir.");
-          return;
-        }
-
-        try {
-          // Substituir por chamada real ao seu backend ASP.NET
-          // const response = await fetch(`/api/dishes/${currentDishId}/like`, { method: 'POST' });
-          // const result = await response.json();
-
-          // Simulação
-          const likesCount = document.getElementById("like-count");
-          likesCount.textContent = parseInt(likesCount.textContent) + 1;
-        } catch (error) {
-          console.error("Erro ao registrar like:", error);
-          alert("Erro ao registrar like.");
-        }
-      }
-
-      // Função para lidar com dislike
-      async function handleDislike() {
-        if (!isLoggedIn) {
-          alert("Você precisa estar logado para dar dislike.");
-          return;
-        }
-
-        try {
-          // Substituir por chamada real ao seu backend ASP.NET
-          // const response = await fetch(`/api/dishes/${currentDishId}/dislike`, { method: 'POST' });
-          // const result = await response.json();
-
-          // Simulação
-          const dislikesCount = document.getElementById("dislike-count");
-          dislikesCount.textContent = parseInt(dislikesCount.textContent) + 1;
-        } catch (error) {
-          console.error("Erro ao registrar dislike:", error);
-          alert("Erro ao registrar dislike.");
-        }
-      }
-
-      // Função para lidar com envio de comentário
-      async function handleCommentSubmit(e) {
-        e.preventDefault();
-
-        if (!isLoggedIn) {
-          alert("Você precisa estar logado para comentar.");
-          return;
-        }
-
-        if (!commentText.value.trim()) {
-          alert("Por favor, digite seu comentário.");
-          return;
-        }
-
-        try {
-          // Substituir por chamada real ao seu backend ASP.NET
-          /*
-                const response = await fetch(`/api/dishes/${currentDishId}/comments`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        text: commentText.value
-                    })
-                });
-                
-                const newComment = await response.json();
-                */
-
-          // Simulação
-          const newComment = {
-            id: Date.now(),
-            author: currentUser || "Usuário Teste",
-            text: commentText.value,
-            date: new Date().toISOString(),
-          };
-
-          // Recarregar comentários (na implementação real, o backend retornaria a lista atualizada)
-          loadComments(currentDishId);
-          commentText.value = "";
-        } catch (error) {
-          console.error("Erro ao enviar comentário:", error);
-          alert("Erro ao enviar comentário.");
-        }
-      }
-
-      // Função para atualizar o contador de likes
-      async function updateLikeCount(idPost) {
-        const res = await fetch(`/api/publicacoes/LikesCount/${idPost}`);
-        const data = await res.json();
-        document.querySelector(`.like-count[data-id="${idPost}"]`).textContent = data.likes;
-      }
-
-      // Carregar pratos em destaque para todos
-      document.addEventListener("DOMContentLoaded", async () => {
-        try {
-          const response = await fetch("/api/publicacoes/Listar");
-          const publicacoes = await response.json();
-
-          dishList.innerHTML = ""; // Limpa o container
-
-          publicacoes.forEach((pub) => {
-            const div = document.createElement("div");
-            div.className = "dish-card";
-            div.innerHTML = `
-              <h2>${pub.nome}</h2>
-              <p>${pub.descricao}</p>
-              ${
-                pub.imagem
-                  ? `<img src="${pub.imagem}" alt="${pub.nome}" style="max-width:200px;">`
-                  : ""
-              }
-              <div>
-                <button class="like-btn" data-id="${pub.idPost}">
-                  👍 Curtir <span class="like-count" data-id="${pub.idPost}">0</span>
-                </button>
-              </div>
-              <hr>
-            `;
-            dishList.appendChild(div);
-
-            // Atualiza o contador de likes ao carregar
-            updateLikeCount(pub.idPost);
-
-            // Evento de like
-            if (localStorage.getItem("isLoggedIn") === "true") {
-              div.querySelector(".like-btn").addEventListener("click", async function () {
-                const idPost = this.getAttribute("data-id");
-                const idUsuario = localStorage.getItem("userId");
-                const res = await fetch("/api/publicacoes/Like", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ idPost, idUsuario }),
-                });
-                if (res.ok) {
-                  updateLikeCount(idPost);
-                } else {
-                  const data = await res.json();
-                  alert(data.message || "Erro ao curtir.");
-                }
-              });
-            } else {
-              // Se não estiver logado, desabilita o botão
-              div.querySelector(".like-btn").disabled = true;
-              div.querySelector(".like-btn").title = "Faça login para curtir";
-            }
-          });
-        } catch (err) {
-          dishList.innerHTML = "<p>Erro ao carregar publicações.</p>";
-        }
-      });
-
-      // Event Listeners
-      loginBtn.addEventListener("click", () => {
-        window.location.href = "login.html"; // Redireciona para login.html
-      });
-
-      registerLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        registerBtn.click();
-      });
-
-      commentForm.addEventListener("submit", handleCommentSubmit);
-
       // Inicialização
-      document.addEventListener("DOMContentLoaded", () => {
-        const isLoggedIn = localStorage.getItem("isLoggedIn"); // Verifica o estado de login
-        const loginButton = document.getElementById("login-btn");
-        const registerButton = document.getElementById("register-btn");
-        const logoutButton = document.getElementById("logout-btn");
-        const addDishButton = document.getElementById("add-dish-btn");
-
-        if (isLoggedIn === "true") {
-          // Usuário está logado
-          loginButton.style.display = "none"; // Esconde o botão de login
-          registerButton.style.display = "none"; // Esconde o botão de cadastrar
-          logoutButton.style.display = "block"; // Exibe o botão de logout
-          addDishButton.style.display = "block"; // Exibe o botão de adicionar prato
-        } else {
-          // Usuário não está logado
-          loginButton.style.display = "block"; // Exibe o botão de login
-          registerButton.style.display = "block"; // Exibe o botão de cadastrar
-          logoutButton.style.display = "none"; // Esconde o botão de logout
-          addDishButton.style.display = "none"; // Esconde o botão de adicionar prato
-        }
-
-        // Adiciona evento ao botão de logout
-        logoutButton.addEventListener("click", () => {
-          localStorage.removeItem("isLoggedIn"); // Remove o estado de login
-          window.location.reload(); // Recarrega a página
-        });
-      });
+      document.addEventListener("DOMContentLoaded", loadDishes);
     </script>
   </body>
 </html>
