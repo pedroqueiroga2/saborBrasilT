@@ -37,6 +37,8 @@ public class PublicacaoController : ControllerBase
 
             Console.WriteLine($"Nome: {publicacao.Nome}, Descricao: {publicacao.Descricao}, Imagem: {publicacao.Imagem}");
 
+
+            //publicacao.DataPublicao = DateTime.Now;
             _context.Publicacoes.Add(publicacao);
             _context.SaveChanges();
 

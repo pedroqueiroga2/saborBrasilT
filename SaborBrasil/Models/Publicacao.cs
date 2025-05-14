@@ -28,6 +28,7 @@ namespace SaborBrasil.Models
         public int? UsuarioId { get; set; }
 
         [Column("dataPublicao")]
-        public DateTime DataPublicao { get; set; } = DateTime.Now;
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Gera automaticamente o valor para a coluna
+        public DateTime? DataPublicao { get; set; }
     }
 }

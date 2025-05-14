@@ -378,7 +378,7 @@
         img.src = prato.imagem || "https://via.placeholder.com/600x220?text=Sem+Imagem";
         img.alt = prato.nome;
         title.textContent = prato.nome;
-        meta.textContent = `Publicado por: ${prato.autor || "Desconhecido"} em ${formatDate(prato.dataPublicacao || prato.data || new Date())}`;
+        meta.textContent = `Publicado por: ${prato.autor || "Desconhecido"} em ${formatDate(prato.dataPublicao)}`;
         desc.textContent = prato.descricao;
 
         // Carregar likes/dislikes do backend
