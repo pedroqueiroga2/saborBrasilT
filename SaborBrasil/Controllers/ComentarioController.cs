@@ -20,7 +20,18 @@ public class ComentariosController : ControllerBase
     {
         var comentarios = await _context.Comentarios
             .Where(c => c.Post_Id == postId)
-            .OrderByDescending(c => c.Created_At)
+            .OrderByDescending(c => c.Created_At).Join(_context.Usuarios,
+              c => c.Id_Usuario,
+              u => u.IdUsuario,
+              (c, u) => new {
+                  c.IdComentario,
+                  c.Descricao,
+                  c.Id_Usuario,
+                  c.Data,
+                  c.Post_Id,
+                  c.Created_At,
+                  NomeUsuario = u.Nome // <-- Nome do usuário
+              })
             .ToListAsync();
 
         return Ok(comentarios);
@@ -33,8 +44,8 @@ public class ComentariosController : ControllerBase
         if (comentario == null || string.IsNullOrWhiteSpace(comentario.Descricao))
             return BadRequest(new { message = "Comentário inválido." });
 
-        comentario.Created_At = DateTime.Now;
-        comentario.Data = DateTime.Now;
+        
+        
 
         _context.Comentarios.Add(comentario);
         await _context.SaveChangesAsync();

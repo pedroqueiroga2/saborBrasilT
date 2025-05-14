@@ -502,7 +502,7 @@
           }
           comments.forEach((comment) => {
             const c = commentTemplate.content.cloneNode(true);
-            c.querySelector(".comment-author").textContent = "Usuário"; // Troque pelo nome do usuário se desejar
+            c.querySelector(".comment-author").textContent = comment.nomeUsuario || localStorage.getItem("userName") || "Usuário";
             c.querySelector(".comment-date").textContent = formatDate(
               comment.created_At || comment.data || new Date()
             );
