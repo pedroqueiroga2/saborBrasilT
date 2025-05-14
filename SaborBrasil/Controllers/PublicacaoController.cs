@@ -55,7 +55,18 @@ public class PublicacaoController : ControllerBase
     [HttpGet("Listar")]
     public IActionResult Listar()
     {
-        var publicacoes = _context.Publicacoes
+        var publicacoes = _context.Publicacoes.Join(_context.Usuarios,
+              pub => pub.UsuarioId,
+              user => user.IdUsuario,
+              (pub, user) => new {
+                  pub.IdPost,
+                  pub.Nome,
+                  pub.Descricao,
+                  pub.Imagem,
+                  pub.UsuarioId,
+                  pub.DataPublicao,
+                  Autor = user.Nome // <-- Aqui pega o nome do usuário
+              })
             .OrderByDescending(p => p.DataPublicao)
             .ToList();
         return Ok(publicacoes);
