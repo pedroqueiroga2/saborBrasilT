@@ -13,7 +13,7 @@ namespace SaborBrasil.Models
         [Column("descricao")]
         public string Descricao { get; set; } = string.Empty;
         [Column("id_usuario")]
-        public int? Id_Usuario { get; set; }
+        public int? Id_Usuario { get; set; }   
         [Column("data")]
         public DateTime? Data { get; set; }
         [Column("post_id")]

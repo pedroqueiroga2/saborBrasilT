@@ -262,26 +262,7 @@
               <span>👎</span> <span class="dislike-count">0</span>
             </button>
           </div>
-          <div class="comments-section">
-            <div class="section-title">Comentários</div>
-            <div class="login-message" style="display:none;">
-              Você precisa estar logado para comentar.
-              <a href="login.html">Faça login</a> ou
-              <a href="Cadastro.html">cadastre-se</a>.
-            </div>
-            <form class="comment-form" style="display:none;">
-              <textarea
-                class="comment-input"
-                placeholder="Adicione seu comentário..."
-              ></textarea>
-              <button type="submit" class="submit-comment">
-                Enviar Comentário
-              </button>
-            </form>
-            <div class="comments-list">
-              <div class="loading">Carregando comentários...</div>
-            </div>
-          </div>
+          
         </div>
       </div>
     </template>
@@ -368,11 +349,6 @@
         const dislikeBtn = card.querySelector(".dislike-btn");
         const likeCount = card.querySelector(".like-count");
         const dislikeCount = card.querySelector(".dislike-count");
-        const commentsSection = card.querySelector(".comments-section");
-        const loginMessage = commentsSection.querySelector(".login-message");
-        const commentForm = commentsSection.querySelector(".comment-form");
-        const commentInput = commentForm.querySelector(".comment-input");
-        const commentsList = commentsSection.querySelector(".comments-list");
 
         // Dados do prato
         img.src = prato.imagem || "https://via.placeholder.com/600x220?text=Sem+Imagem";
@@ -446,72 +422,14 @@
           alert("Funcionalidade de dislike não implementada.");
         });
 
-        // Comentários
-        if (isLoggedIn) {
-          loginMessage.style.display = "none";
-          commentForm.style.display = "block";
-        } else {
-          loginMessage.style.display = "block";
-          commentForm.style.display = "none";
-        }
-
-        // Carregar comentários
-        loadComments(prato.idPost, commentsList);
-
-        // Enviar comentário
-        commentForm.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          if (!commentInput.value.trim()) {
-            alert("Digite seu comentário.");
-            return;
-          }
-          try {
-            const res = await fetch("/api/comentarios", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                descricao: commentInput.value,
-                id_usuario: currentUserId,
-                post_id: prato.idPost,
-              }),
-            });
-            if (!res.ok) {
-              const data = await res.json();
-              throw new Error(data.message || "Erro ao comentar.");
-            }
-            commentInput.value = "";
-            loadComments(prato.idPost, commentsList);
-          } catch (err) {
-            alert("Erro ao enviar comentário.");
-          }
+        img.addEventListener("click", () => {
+          window.location.href = `/uploads/product.html?id=${prato.idPost}`;
+        });
+        title.addEventListener("click", () => {
+          window.location.href = `/uploads/product.html?id=${prato.idPost}`;
         });
 
         dishList.appendChild(card);
-      }
-
-      // Carregar comentários de um prato
-      async function loadComments(postId, commentsList) {
-        commentsList.innerHTML = '<div class="loading">Carregando comentários...</div>';
-        try {
-          const res = await fetch(`/api/comentarios?postId=${postId}`);
-          const comments = await res.json();
-          commentsList.innerHTML = "";
-          if (!comments.length) {
-            commentsList.innerHTML = '<div class="loading">Nenhum comentário ainda.</div>';
-            return;
-          }
-          comments.forEach((comment) => {
-            const c = commentTemplate.content.cloneNode(true);
-            c.querySelector(".comment-author").textContent = comment.nomeUsuario || localStorage.getItem("userName") || "Usuário";
-            c.querySelector(".comment-date").textContent = formatDate(
-              comment.created_At || comment.data || new Date()
-            );
-            c.querySelector(".comment-text").textContent = comment.descricao;
-            commentsList.appendChild(c);
-          });
-        } catch (err) {
-          commentsList.innerHTML = '<div class="loading">Erro ao carregar comentários.</div>';
-        }
       }
 
       // Formatar data
