@@ -110,4 +110,11 @@ public class PublicacaoController : ControllerBase
         var count = _context.Likes.Count(l => l.IdPost == idPost);
         return Ok(new { likes = count });
     }
+
+    [HttpGet("UserLiked")]
+    public IActionResult UserLiked([FromQuery] int postId, [FromQuery] int userId)
+    {
+        var liked = _context.Likes.Any(l => l.IdPost == postId && l.IdUsuario == userId);
+        return Ok(new { liked });
+    }
 }

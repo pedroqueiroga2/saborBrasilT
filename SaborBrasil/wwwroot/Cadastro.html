@@ -99,8 +99,20 @@
             font-weight: 500;
         }
 
+        .warning-message {
+            color: #e6b800; /* amarelo */
+            font-size: 0.95rem;
+            margin-top: 4px;
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
         .form-group input.invalid {
             border-color: #dc3545;
+        }
+
+        .form-group input.warning {
+            border-color: #e6b800;
         }
 
         @media (max-width: 600px) {
@@ -156,10 +168,19 @@
             return /^\d{11}$/.test(cpf);
         }
 
-        // Limpar mensagens de erro
+        // Função para validar telefone (apenas 11 dígitos)
+        function isValidTelefone(telefone) {
+            return /^\d{11}$/.test(telefone);
+        }
+
+        // Limpar mensagens de erro e aviso
         function clearErrors() {
             document.querySelectorAll('.error-message').forEach(e => e.textContent = '');
-            document.querySelectorAll('.form-group input').forEach(i => i.classList.remove('invalid'));
+            document.querySelectorAll('.warning-message').forEach(e => e.textContent = '');
+            document.querySelectorAll('.form-group input').forEach(i => {
+                i.classList.remove('invalid');
+                i.classList.remove('warning');
+            });
         }
 
         document.getElementById('register-form').addEventListener('submit', async function(e) {
@@ -179,18 +200,26 @@
                 document.getElementById('nome').classList.add('invalid');
                 valid = false;
             }
+            // CPF obrigatório e 11 dígitos
             if (!cpf) {
                 document.getElementById('cpf-error').textContent = "Esse campo é obrigatório";
                 document.getElementById('cpf').classList.add('invalid');
                 valid = false;
             } else if (!isValidCPF(cpf)) {
-                document.getElementById('cpf-error').textContent = "CPF inválido (11 dígitos)";
-                document.getElementById('cpf').classList.add('invalid');
+                document.getElementById('cpf-error').textContent = "Número de cpf inválido";
+                document.getElementById('cpf-error').className = "warning-message";
+                document.getElementById('cpf').classList.add('warning');
                 valid = false;
             }
+            // Telefone obrigatório e 11 dígitos
             if (!telefone) {
                 document.getElementById('telefone-error').textContent = "Esse campo é obrigatório";
                 document.getElementById('telefone').classList.add('invalid');
+                valid = false;
+            } else if (!isValidTelefone(telefone)) {
+                document.getElementById('telefone-error').textContent = "Número de telefone inválido";
+                document.getElementById('telefone-error').className = "warning-message";
+                document.getElementById('telefone').classList.add('warning');
                 valid = false;
             }
             if (!email) {
@@ -221,6 +250,7 @@
                     if (data.exists) {
                         emailExists = true;
                         document.getElementById('email-error').textContent = "Erro! Esse email já existe!";
+                        document.getElementById('email-error').className = "error-message";
                         document.getElementById('email').classList.add('invalid');
                     }
                 }
@@ -231,6 +261,7 @@
                     if (data.exists) {
                         cpfExists = true;
                         document.getElementById('cpf-error').textContent = "Erro! Esse CPF já está em uso!";
+                        document.getElementById('cpf-error').className = "error-message";
                         document.getElementById('cpf').classList.add('invalid');
                     }
                 }
@@ -254,9 +285,8 @@
                     })
                 });
                 if (res.ok) {
-                    document.getElementById('form-success').textContent = "Cadastro realizado com sucesso!";
-                    document.getElementById('form-success').style.display = "block";
-                    document.getElementById('register-form').reset();
+                    // Redireciona para index.html após cadastro
+                    window.location.href = "index.html";
                 } else {
                     const data = await res.json();
                     alert(data.message || "Erro ao cadastrar.");

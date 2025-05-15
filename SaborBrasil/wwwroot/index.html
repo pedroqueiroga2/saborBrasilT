@@ -15,7 +15,6 @@
         --light-gray: #eee;
         --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
       }
-
       body {
         background: var(--light-color);
         color: var(--text-color);
@@ -23,7 +22,6 @@
         margin: 0;
         min-height: 100vh;
       }
-
       header {
         background: var(--primary-color);
         color: var(--white);
@@ -33,13 +31,11 @@
         align-items: center;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       }
-
       .logo {
         font-size: 2rem;
         font-weight: bold;
         letter-spacing: 2px;
       }
-
       .auth-buttons button {
         background: var(--white);
         color: var(--primary-color);
@@ -55,19 +51,16 @@
         background: var(--primary-color);
         color: var(--white);
       }
-
       .container {
         max-width: 1200px;
         margin: 30px auto;
         padding: 0 20px;
       }
-
       .dish-list {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
         gap: 2rem;
       }
-
       .dish-card {
         background: var(--white);
         border-radius: 18px;
@@ -132,13 +125,10 @@
         background: var(--primary-color);
         color: var(--white);
       }
-      .like-count,
-      .dislike-count {
+      .like-count {
         font-size: 1rem;
         font-weight: bold;
       }
-
-      /* Comentários */
       .comments-section {
         background: var(--light-gray);
         border-radius: 12px;
@@ -217,6 +207,7 @@
         padding: 1.5rem 0;
       }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
   </head>
   <body>
     <header>
@@ -256,13 +247,10 @@
           <div class="dish-description"></div>
           <div class="dish-actions">
             <button class="action-btn like-btn">
-              <span>👍</span> <span class="like-count">0</span>
-            </button>
-            <button class="action-btn dislike-btn">
-              <span>👎</span> <span class="dislike-count">0</span>
+              <i class="fa-regular fa-heart"></i>
+              <span class="like-count">0</span>
             </button>
           </div>
-          
         </div>
       </div>
     </template>
@@ -346,9 +334,9 @@
         const meta = card.querySelector(".dish-meta");
         const desc = card.querySelector(".dish-description");
         const likeBtn = card.querySelector(".like-btn");
-        const dislikeBtn = card.querySelector(".dislike-btn");
+        const likeIcon = card.querySelector(".fa-heart");
         const likeCount = card.querySelector(".like-count");
-        const dislikeCount = card.querySelector(".dislike-count");
+        let liked = false;
 
         // Dados do prato
         img.src = prato.imagem || "https://via.placeholder.com/600x220?text=Sem+Imagem";
@@ -357,31 +345,35 @@
         meta.textContent = `Publicado por: ${prato.autor || prato.Autor || "Desconhecido"} em ${formatDate(prato.dataPublicao)}`;
         desc.textContent = prato.descricao;
 
-        // Carregar likes/dislikes do backend
+        // Carregar likes do backend
         try {
           const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
           likeCount.textContent = data.likes ?? 0;
-          dislikeCount.textContent = data.dislikes ?? 0;
         } catch {
           likeCount.textContent = 0;
-          dislikeCount.textContent = 0;
         }
 
-        let liked = false;
         if (isLoggedIn) {
           liked = await userLiked(prato.idPost, currentUserId);
           if (liked) {
-            likeBtn.classList.add("liked");
+            likeIcon.classList.remove("fa-regular");
+            likeIcon.classList.add("fa-solid");
+          } else {
+            likeIcon.classList.remove("fa-solid");
+            likeIcon.classList.add("fa-regular");
           }
         }
 
-        // Eventos de like/dislike
+        // Evento de like
         likeBtn.addEventListener("click", async () => {
           if (!isLoggedIn) {
             alert("Você precisa estar logado para curtir.");
             return;
           }
-          if (!liked) {
+
+          let likedNow = await userLiked(prato.idPost, currentUserId);
+
+          if (!likedNow) {
             // Curtir
             const res = await fetch("/api/publicacoes/Like", {
               method: "POST",
@@ -389,8 +381,8 @@
               body: JSON.stringify({ idPost: prato.idPost, idUsuario: currentUserId }),
             });
             if (res.ok) {
-              liked = true;
-              likeBtn.classList.add("liked");
+              likeIcon.classList.remove("fa-regular");
+              likeIcon.classList.add("fa-solid");
               const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
               likeCount.textContent = data.likes;
             } else {
@@ -404,22 +396,14 @@
               body: JSON.stringify({ idPost: prato.idPost, idUsuario: currentUserId }),
             });
             if (res.ok) {
-              liked = false;
-              likeBtn.classList.remove("liked");
+              likeIcon.classList.remove("fa-solid");
+              likeIcon.classList.add("fa-regular");
               const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
               likeCount.textContent = data.likes;
             } else {
               alert("Erro ao remover like.");
             }
           }
-        });
-        dislikeBtn.addEventListener("click", async () => {
-          if (!isLoggedIn) {
-            alert("Você precisa estar logado para dar dislike.");
-            return;
-          }
-          // Implemente endpoint de dislike se necessário
-          alert("Funcionalidade de dislike não implementada.");
         });
 
         img.addEventListener("click", () => {

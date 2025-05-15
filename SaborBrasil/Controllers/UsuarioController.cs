@@ -27,7 +27,7 @@ public class UsuarioController : Controller
 
         _context.Usuarios.Add(usuario);
         _context.SaveChanges();
-        return Redirect("/index.html"); // Redireciona para o index.html após o cadastro
+        return Ok(new { message = "Cadastro realizado com sucesso!" }); // <-- Troque Redirect por Ok
     }
     [HttpPost("Login")] // Define que este método será acessado via POST em /Usuario/Login
     public IActionResult Login([FromBody] Usuario usuario)

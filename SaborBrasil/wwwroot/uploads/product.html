@@ -418,12 +418,10 @@
           <div class="dish-description" id="dish-description"></div>
           <div class="dish-actions">
             <button class="action-btn like-btn" id="like-btn">
-              <span>👍</span> <span class="like-count" id="like-count">0</span>
+              <i class="fa-regular fa-heart" id="like-icon"></i>
+              <span class="like-count" id="like-count">0</span>
             </button>
-            <button class="action-btn dislike-btn" id="dislike-btn">
-              <span>👎</span>
-              <span class="dislike-count" id="dislike-count">0</span>
-            </button>
+            
           </div>
         </div>
       </div>
@@ -515,20 +513,20 @@
       let isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
       let currentUserId = localStorage.getItem("userId");
       let currentUserName = localStorage.getItem("userName");
+      let liked = false;
+      let allComments = [];
 
-      // Navbar dinâmica
+      // Navbar dinâmica (mantém igual)
       function updateNavbar() {
         const navButtons = document.getElementById("nav-buttons");
         navButtons.innerHTML = "";
         if (isLoggedIn) {
-          // Botão Home (apenas ícone)
           const homeBtn = document.createElement("a");
           homeBtn.className = "home-btn";
           homeBtn.innerHTML = '<i class="fa fa-home"></i>';
           homeBtn.href = "/index.html";
           navButtons.appendChild(homeBtn);
 
-          // Botão Sair
           const logoutBtn = document.createElement("button");
           logoutBtn.id = "logout-btn";
           logoutBtn.innerHTML = "Sair";
@@ -540,20 +538,15 @@
           };
           navButtons.appendChild(logoutBtn);
         } else {
-          // Botão Login
           const loginBtn = document.createElement("button");
           loginBtn.id = "login-btn";
           loginBtn.innerHTML = "Login";
           loginBtn.onclick = () => {
-            const currentUrl =
-              window.location.pathname + window.location.search;
-            window.location.href = `/login.html?returnUrl=${encodeURIComponent(
-              currentUrl
-            )}`;
+            const currentUrl = window.location.pathname + window.location.search;
+            window.location.href = `/login.html?returnUrl=${encodeURIComponent(currentUrl)}`;
           };
           navButtons.appendChild(loginBtn);
 
-          // Botão Cadastrar
           const registerBtn = document.createElement("button");
           registerBtn.id = "register-btn";
           registerBtn.innerHTML = "Cadastrar";
@@ -569,9 +562,8 @@
       const dishMeta = document.getElementById("dish-meta");
       const dishDescription = document.getElementById("dish-description");
       const likeBtn = document.getElementById("like-btn");
-      const dislikeBtn = document.getElementById("dislike-btn");
+      const likeIcon = document.getElementById("like-icon");
       const likeCount = document.getElementById("like-count");
-      const dislikeCount = document.getElementById("dislike-count");
       const loginMessage = document.getElementById("login-message");
       const commentForm = document.getElementById("comment-form");
       const commentInput = document.getElementById("comment-input");
@@ -584,12 +576,23 @@
 
       // Obter id do prato da URL
       const pratoId = getQueryParam("id");
-
       if (!pratoId) {
         document.querySelector(".container").innerHTML =
           "<div class='loading'>Prato não encontrado.</div>";
         throw new Error("ID do prato não informado.");
       }
+
+      // Exibe/esconde formulário de comentário conforme login
+      function updateCommentForm() {
+        if (isLoggedIn) {
+          loginMessage.style.display = "none";
+          commentForm.style.display = "block";
+        } else {
+          loginMessage.style.display = "block";
+          commentForm.style.display = "none";
+        }
+      }
+      updateCommentForm();
 
       // Carregar detalhes do prato
       async function loadDish() {
@@ -615,43 +618,40 @@
         }
       }
 
-      // Carregar likes/dislikes
+      // Função para verificar se o usuário já curtiu
+      async function userLiked() {
+        if (!isLoggedIn) return false;
+        const res = await fetch(
+          `/api/publicacoes/UserLiked?postId=${pratoId}&userId=${currentUserId}`
+        );
+        if (!res.ok) return false;
+        const data = await res.json();
+        return data.liked;
+      }
+
+      // Carregar likes
       async function loadLikes() {
         try {
           const data = await fetch(
             `/api/publicacoes/LikesCount/${pratoId}`
           ).then((r) => r.json());
           likeCount.textContent = data.likes ?? 0;
-          dislikeCount.textContent = data.dislikes ?? 0;
         } catch {
           likeCount.textContent = 0;
-          dislikeCount.textContent = 0;
         }
       }
 
-      // Verificar se usuário já curtiu
-      async function userLiked() {
-        if (!isLoggedIn) return false;
-        try {
-          const res = await fetch(
-            `/api/publicacoes/UserLiked?postId=${pratoId}&userId=${currentUserId}`
-          );
-          if (!res.ok) return false;
-          const data = await res.json();
-          return data.liked;
-        } catch {
-          return false;
-        }
-      }
-
-      // Like/Dislike
-      let liked = false;
+      // Like/Deslike
       likeBtn.addEventListener("click", async () => {
         if (!isLoggedIn) {
           alert("Você precisa estar logado para curtir.");
           return;
         }
-        if (!liked) {
+
+        // Sempre consulte o backend para saber se está curtido
+        let likedNow = await userLiked(pratoId, currentUserId); // ou userLiked(prato.idPost, currentUserId) no index.html
+
+        if (!likedNow) {
           // Curtir
           const res = await fetch("/api/publicacoes/Like", {
             method: "POST",
@@ -659,8 +659,9 @@
             body: JSON.stringify({ idPost: pratoId, idUsuario: currentUserId }),
           });
           if (res.ok) {
-            liked = true;
             likeBtn.classList.add("liked");
+            likeIcon.classList.remove("fa-regular");
+            likeIcon.classList.add("fa-solid");
             await loadLikes();
           } else {
             alert("Você já curtiu esse prato.");
@@ -673,35 +674,19 @@
             body: JSON.stringify({ idPost: pratoId, idUsuario: currentUserId }),
           });
           if (res.ok) {
-            liked = false;
             likeBtn.classList.remove("liked");
+            likeIcon.classList.remove("fa-solid");
+            likeIcon.classList.add("fa-regular");
             await loadLikes();
           } else {
             alert("Erro ao remover like.");
           }
         }
       });
-      dislikeBtn.addEventListener("click", async () => {
-        alert("Funcionalidade de dislike não implementada.");
-      });
 
-      // Comentários
-      function updateCommentForm() {
-        if (isLoggedIn) {
-          loginMessage.style.display = "none";
-          commentForm.style.display = "block";
-        } else {
-          loginMessage.style.display = "block";
-          commentForm.style.display = "none";
-        }
-      }
-      updateCommentForm();
-
-      // Carregar comentários (mostra até 3, botão para ver todos)
-      let allComments = [];
+      // Carregar comentários
       async function loadComments() {
-        commentsList.innerHTML =
-          '<div class="loading">Carregando comentários...</div>';
+        commentsList.innerHTML = '<div class="loading">Carregando comentários...</div>';
         showAllBtn.style.display = "none";
         try {
           const res = await fetch(`/api/comentarios?postId=${pratoId}`);
@@ -709,8 +694,7 @@
           allComments = comments;
           commentsList.innerHTML = "";
           if (!comments.length) {
-            commentsList.innerHTML =
-              '<div class="loading">Nenhum comentário ainda.</div>';
+            commentsList.innerHTML = '<div class="loading">Nenhum comentário ainda.</div>';
             return;
           }
           // Exibe até 3 comentários
@@ -719,18 +703,16 @@
             c.querySelector(".comment-author").textContent =
               comment.nomeUsuario || "Usuário";
             c.querySelector(".comment-date").textContent = formatDate(
-              comment.created_At || comment.data || new Date()
+              comment.data || comment.created_At || new Date()
             );
             c.querySelector(".comment-text").textContent = comment.descricao;
             commentsList.appendChild(c);
           });
-          // Se houver mais de 3 comentários, mostra botão
           if (comments.length > 3) {
             showAllBtn.style.display = "block";
           }
         } catch (err) {
-          commentsList.innerHTML =
-            '<div class="loading">Erro ao carregar comentários.</div>';
+          commentsList.innerHTML = '<div class="loading">Erro ao carregar comentários.</div>';
         }
       }
 
@@ -742,7 +724,7 @@
           c.querySelector(".comment-author").textContent =
             comment.nomeUsuario || "Usuário";
           c.querySelector(".comment-date").textContent = formatDate(
-            comment.created_At || comment.data || new Date()
+            comment.data || comment.created_At || new Date()
           );
           c.querySelector(".comment-text").textContent = comment.descricao;
           modalCommentsList.appendChild(c);
@@ -778,7 +760,7 @@
             throw new Error(data.message || "Erro ao comentar.");
           }
           commentInput.value = "";
-          loadComments();
+          await loadComments();
         } catch (err) {
           alert("Erro ao enviar comentário.");
         }
@@ -802,8 +784,17 @@
         await loadDish();
         await loadLikes();
         liked = await userLiked();
-        if (liked) likeBtn.classList.add("liked");
+        if (liked) {
+          likeBtn.classList.add("liked");
+          likeIcon.classList.remove("fa-regular");
+          likeIcon.classList.add("fa-solid");
+        } else {
+          likeBtn.classList.remove("liked");
+          likeIcon.classList.remove("fa-solid");
+          likeIcon.classList.add("fa-regular");
+        }
         await loadComments();
+        updateCommentForm();
       });
     </script>
   </body>
