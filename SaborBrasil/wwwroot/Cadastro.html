@@ -91,6 +91,18 @@
             margin-top: 5px;
         }
 
+        .error-message {
+            color: #dc3545;
+            font-size: 0.95rem;
+            margin-top: 4px;
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        .form-group input.invalid {
+            border-color: #dc3545;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -101,45 +113,158 @@
 <body>
     <div class="container">
         <h1>Cadastre-se</h1>
-
-        <form action="/Usuario/Cadastrar" method="post">
+        <form id="register-form" action="/Usuario/Cadastrar" method="post" autocomplete="off">
             <div class="form-group">
                 <label for="nome" class="required-field">Nome Completo</label>
                 <input type="text" id="nome" name="Nome" required placeholder="Digite seu nome completo">
+                <div class="error-message" id="nome-error"></div>
             </div>
-
             <div class="form-group">
                 <label for="cpf" class="required-field">CPF</label>
                 <input type="text" id="cpf" name="Cpf" required placeholder="Digite seu CPF (somente números)" maxlength="11">
+                <div class="error-message" id="cpf-error"></div>
             </div>
-
             <div class="form-group">
                 <label for="telefone" class="required-field">Telefone</label>
                 <input type="tel" id="telefone" name="Telefone" required placeholder="Digite seu telefone com DDD">
+                <div class="error-message" id="telefone-error"></div>
             </div>
-
             <div class="form-group">
                 <label for="email" class="required-field">E-mail</label>
                 <input type="email" id="email" name="Email" required placeholder="Digite seu e-mail">
+                <div class="error-message" id="email-error"></div>
             </div>
-
             <div class="form-group">
                 <label for="senha" class="required-field">Senha</label>
                 <input type="password" id="senha" name="Senha" required placeholder="Crie uma senha segura" minlength="8">
+                <div class="error-message" id="senha-error"></div>
+                <div class="password-hint">Mínimo 8 caracteres, com letras maiúsculas, minúsculas, números e símbolo.</div>
             </div>
-
-            <button
-              id="register-btn"
-              onclick="window.location.href='/Cadastro.html'"
-              class="btn-submit"
-            >
-              Cadastrar
-            </button>
+            <button type="submit" id="register-btn" class="btn-submit">Cadastrar</button>
         </form>
-        
+        <div id="form-success" style="color:green; margin-top:1rem; display:none;"></div>
     </div>
+    <script>
+        // Função para validar senha forte
+        function isStrongPassword(senha) {
+            // Pelo menos 8 caracteres, 1 maiúscula, 1 minúscula, 1 número e 1 símbolo
+            return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(senha);
+        }
 
-    
-    
+        // Função para validar CPF simples (apenas 11 dígitos)
+        function isValidCPF(cpf) {
+            return /^\d{11}$/.test(cpf);
+        }
+
+        // Limpar mensagens de erro
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(e => e.textContent = '');
+            document.querySelectorAll('.form-group input').forEach(i => i.classList.remove('invalid'));
+        }
+
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearErrors();
+            let valid = true;
+
+            const nome = document.getElementById('nome').value.trim();
+            const cpf = document.getElementById('cpf').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value;
+
+            // Validação de campos obrigatórios
+            if (!nome) {
+                document.getElementById('nome-error').textContent = "Esse campo é obrigatório";
+                document.getElementById('nome').classList.add('invalid');
+                valid = false;
+            }
+            if (!cpf) {
+                document.getElementById('cpf-error').textContent = "Esse campo é obrigatório";
+                document.getElementById('cpf').classList.add('invalid');
+                valid = false;
+            } else if (!isValidCPF(cpf)) {
+                document.getElementById('cpf-error').textContent = "CPF inválido (11 dígitos)";
+                document.getElementById('cpf').classList.add('invalid');
+                valid = false;
+            }
+            if (!telefone) {
+                document.getElementById('telefone-error').textContent = "Esse campo é obrigatório";
+                document.getElementById('telefone').classList.add('invalid');
+                valid = false;
+            }
+            if (!email) {
+                document.getElementById('email-error').textContent = "Esse campo é obrigatório";
+                document.getElementById('email').classList.add('invalid');
+                valid = false;
+            }
+            if (!senha) {
+                document.getElementById('senha-error').textContent = "Esse campo é obrigatório";
+                document.getElementById('senha').classList.add('invalid');
+                valid = false;
+            } else if (!isStrongPassword(senha)) {
+                document.getElementById('senha-error').textContent = "Essa senha é inválida, pois apresenta baixos padrões de segurança";
+                document.getElementById('senha').classList.add('invalid');
+                valid = false;
+            }
+
+            if (!valid) return;
+
+            // Verificar se e-mail ou CPF já existem no banco
+            let emailExists = false;
+            let cpfExists = false;
+            try {
+                // Verifica e-mail
+                const resEmail = await fetch(`/Usuario/ExisteEmail?email=${encodeURIComponent(email)}`);
+                if (resEmail.ok) {
+                    const data = await resEmail.json();
+                    if (data.exists) {
+                        emailExists = true;
+                        document.getElementById('email-error').textContent = "Erro! Esse email já existe!";
+                        document.getElementById('email').classList.add('invalid');
+                    }
+                }
+                // Verifica CPF
+                const resCpf = await fetch(`/Usuario/ExisteCpf?cpf=${encodeURIComponent(cpf)}`);
+                if (resCpf.ok) {
+                    const data = await resCpf.json();
+                    if (data.exists) {
+                        cpfExists = true;
+                        document.getElementById('cpf-error').textContent = "Erro! Esse CPF já está em uso!";
+                        document.getElementById('cpf').classList.add('invalid');
+                    }
+                }
+            } catch (err) {
+                // Se der erro na API, não bloqueia o cadastro, mas pode mostrar um alerta
+            }
+
+            if (emailExists || cpfExists) return;
+
+            // Se tudo ok, envia o formulário via fetch
+            try {
+                const res = await fetch('/Usuario/Cadastrar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        Nome: nome,
+                        Cpf: cpf,
+                        Telefone: telefone,
+                        Email: email,
+                        Senha: senha
+                    })
+                });
+                if (res.ok) {
+                    document.getElementById('form-success').textContent = "Cadastro realizado com sucesso!";
+                    document.getElementById('form-success').style.display = "block";
+                    document.getElementById('register-form').reset();
+                } else {
+                    const data = await res.json();
+                    alert(data.message || "Erro ao cadastrar.");
+                }
+            } catch (err) {
+                alert("Erro ao conectar com o servidor.");
+            }
+        });
+    </script>
 </body>
 </html>

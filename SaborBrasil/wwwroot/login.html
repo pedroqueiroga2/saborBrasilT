@@ -192,12 +192,20 @@
                     messageDiv.style.display = 'block';
 
                     // Armazenar o estado de login no localStorage
-                    localStorage.setItem('isLoggedIn', 'true'); // Define que o usuário está logado
+                    localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('userId', data.idusuario);
-                    localStorage.setItem("userName", data.nome); // 'nome' deve ser o campo retornado pelo backend
-                    // Redirecionar após 1 segundo
+                    localStorage.setItem("userName", data.nome);
+
+                    // Pegue o returnUrl da URL, se existir
+                    const params = new URLSearchParams(window.location.search);
+                    const returnUrl = params.get('returnUrl');
+
                     setTimeout(() => {
-                        window.location.href = 'index.html'; // Redireciona para o index.html
+                        if (returnUrl) {
+                            window.location.href = returnUrl;
+                        } else {
+                            window.location.href = 'index.html';
+                        }
                     }, 1000);
                 } else {
                     // Exibir mensagem de erro

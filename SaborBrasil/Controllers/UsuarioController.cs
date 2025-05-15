@@ -13,7 +13,7 @@ public class UsuarioController : Controller
     }
 
     [HttpPost("Cadastrar")]
-    public IActionResult Cadastrar(Usuario usuario)
+    public IActionResult Cadastrar([FromBody] Usuario usuario)
     {
         if (!ModelState.IsValid)
         {
@@ -22,7 +22,7 @@ public class UsuarioController : Controller
             {
                 Console.WriteLine(error.ErrorMessage);
             }
-            return View("Erro");
+            return BadRequest(new { message = "Mensagem de erro" });
         }
 
         _context.Usuarios.Add(usuario);
@@ -49,5 +49,25 @@ public class UsuarioController : Controller
             message = "Login realizado com sucesso!",
             idusuario = usuarioExistente.IdUsuario // <-- ESSA LINHA É FUNDAMENTAL
         });
+    }
+
+    [HttpGet("ExisteEmail")]
+    public IActionResult ExisteEmail([FromQuery] string email)
+    {
+        if (string.IsNullOrEmpty(email))
+            return BadRequest(new { exists = false });
+
+        var existe = _context.Usuarios.Any(u => u.Email.ToLower() == email.ToLower());
+        return Ok(new { exists = existe });
+    }
+
+    [HttpGet("ExisteCpf")]
+    public IActionResult ExisteCpf([FromQuery] string cpf)
+    {
+        if (string.IsNullOrEmpty(cpf))
+            return BadRequest(new { exists = false });
+
+        var existe = _context.Usuarios.Any(u => u.Cpf == cpf);
+        return Ok(new { exists = existe });
     }
 }
