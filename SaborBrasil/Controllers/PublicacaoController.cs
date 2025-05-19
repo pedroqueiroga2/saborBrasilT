@@ -117,4 +117,27 @@ public class PublicacaoController : ControllerBase
         var liked = _context.Likes.Any(l => l.IdPost == postId && l.IdUsuario == userId);
         return Ok(new { liked });
     }
+
+    [HttpDelete("Deletar/{idPost}")]
+    public IActionResult Deletar(int idPost, [FromQuery] int usuarioId)
+    {
+        var publicacao = _context.Publicacoes.FirstOrDefault(p => p.IdPost == idPost);
+        if (publicacao == null)
+            return NotFound(new { message = "Publicação não encontrada." });
+
+        if (publicacao.UsuarioId != usuarioId)
+            return Forbid();
+
+        // Remove comentários e likes relacionados, se desejar:
+        var comentarios = _context.Comentarios.Where(c => c.Post_Id == idPost);
+        _context.Comentarios.RemoveRange(comentarios);
+
+        var likes = _context.Likes.Where(l => l.IdPost == idPost);
+        _context.Likes.RemoveRange(likes);
+
+        _context.Publicacoes.Remove(publicacao);
+        _context.SaveChanges();
+
+        return Ok(new { message = "Publicação removida com sucesso!" });
+    }
 }
