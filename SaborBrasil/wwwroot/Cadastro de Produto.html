@@ -191,34 +191,43 @@
       });
 
       // Envio do formulário
-      document.getElementById("post-form").addEventListener("submit", async function (e) {
-  e.preventDefault();
+      postForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-  if (!localStorage.getItem("userId")) {
-    alert("Você precisa estar logado para cadastrar um produto.");
-    window.location.href = "/login.html";
-    return;
-  }
+        if (!localStorage.getItem("userId")) {
+          alert("Você precisa estar logado para cadastrar um produto.");
+          window.location.href = "/login.html";
+          return;
+        }
 
-  const formData = new FormData(this);
-  formData.append("UsuarioId", Number(localStorage.getItem("userId")));
+        const formData = new FormData(postForm);
+        const userId = Number(localStorage.getItem("userId"));
+        formData.append("UsuarioId", userId);
 
-  try {
-    const response = await fetch("/api/publicacoes/Criarpublicacao", {
-      method: "POST",
-      body: formData,
-    });
+        try {
+          const response = await fetch("/api/publicacoes/Criarpublicacao", {
+            method: "POST",
+            body: formData,
+          });
 
-    if (response.ok) {
-      window.location.href = "/index.html";
-    } else {
-      const errorData = await response.json();
-      alert(errorData.message || "Erro ao cadastrar publicação.");
-    }
-  } catch (error) {
-    alert("Erro ao cadastrar publicação: " + error.message);
-  }
-});
+          if (response.ok) {
+            showAlert("Publicação cadastrada com sucesso!", "success");
+            postForm.reset();
+            imagePreview.style.display = "none";
+            setTimeout(() => {
+              window.location.href = "/index.html";
+            }, 1000);
+          } else {
+            const errorData = await response.json();
+            showAlert(
+              errorData.message || "Erro ao cadastrar publicação.",
+              "error"
+            );
+          }
+        } catch (error) {
+          showAlert("Erro ao cadastrar publicação: " + error.message, "error");
+        }
+      });
 
       // Função para mostrar alertas
       function showAlert(message, type) {

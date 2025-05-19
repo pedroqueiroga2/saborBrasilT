@@ -52,4 +52,23 @@ public class ComentariosController : ControllerBase
 
         return Ok(comentario);
     }
+
+    // PUT: api/comentarios/5
+    [HttpPut("{id}")]
+    public async Task<IActionResult> EditarComentario(int id, [FromBody] Comentario comentarioEditado)
+    {
+        var comentario = await _context.Comentarios.FindAsync(id);
+        if (comentario == null)
+            return NotFound(new { message = "Comentário não encontrado." });
+
+        // Só permite editar se for o dono do comentário
+        if (comentario.Id_Usuario != comentarioEditado.Id_Usuario)
+            return Forbid();
+
+        comentario.Descricao = comentarioEditado.Descricao;
+        comentario.Data = DateTime.Now;
+        await _context.SaveChangesAsync();
+
+        return Ok(comentario);
+    }
 }
