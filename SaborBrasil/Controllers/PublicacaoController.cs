@@ -119,5 +119,21 @@ public class PublicacaoController : ControllerBase
         return Ok(new { liked });
     }
 
-    
+    [HttpDelete("Deletar/{idPost}")]
+    public IActionResult Deletar(int idPost, [FromQuery] int usuarioId)
+    {
+        var publicacao = _context.Publicacoes.FirstOrDefault(p => p.IdPost == idPost);
+        if (publicacao == null)
+            return NotFound(new { message = "Publicação não encontrada." });
+
+        if (publicacao.UsuarioId != usuarioId)
+            return Forbid();
+
+        // Remova apenas a publicação!
+        _context.Publicacoes.Remove(publicacao);
+        _context.SaveChanges();
+
+        return Ok(new { message = "Publicação removida com sucesso!" });
+        
+    }
 }
