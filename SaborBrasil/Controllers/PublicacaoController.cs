@@ -128,13 +128,7 @@ public class PublicacaoController : ControllerBase
         if (publicacao.UsuarioId != usuarioId)
             return Forbid();
 
-        // Remove comentários e likes relacionados, se desejar:
-        var comentarios = _context.Comentarios.Where(c => c.Post_Id == idPost);
-        _context.Comentarios.RemoveRange(comentarios);
-
-        var likes = _context.Likes.Where(l => l.IdPost == idPost);
-        _context.Likes.RemoveRange(likes);
-
+        // Remova apenas a publicação!
         _context.Publicacoes.Remove(publicacao);
         _context.SaveChanges();
 

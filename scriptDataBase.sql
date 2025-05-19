@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Usuario` (
   `telefone` VARCHAR(11) NOT NULL,
   `email` VARCHAR(255) NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idusuario`),
-  UNIQUE INDEX `CPF_UNIQUE` (`CPF` ASC) VISIBLE
+  PRIMARY KEY (`idusuario`)
+  
 ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
@@ -102,4 +102,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`likes` (
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+ALTER TABLE Usuario CHANGE COLUMN CPF cpf VARCHAR(255) NOT NULL;
+select * from usuario;
+drop database mydb;
 
