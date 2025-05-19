@@ -435,7 +435,12 @@
               <i class="fa-regular fa-heart" id="like-icon"></i>
               <span class="like-count" id="like-count">0</span>
             </button>
-            
+            <button
+              id="delete-post-btn"
+              style="display:none; background:#dc3545; color:#fff; border:none; border-radius:6px; padding:0.6rem 1.2rem; font-weight:bold; cursor:pointer;"
+            >
+              <i class="fa fa-trash"></i> Apagar publicação
+            </button>
           </div>
         </div>
       </div>
@@ -587,6 +592,7 @@
       const modalBg = document.getElementById("modal-bg");
       const modalClose = document.getElementById("modal-close");
       const modalCommentsList = document.getElementById("modal-comments-list");
+      const deleteBtn = document.getElementById("delete-post-btn");
 
       // Obter id do prato da URL
       const pratoId = getQueryParam("id");
@@ -627,6 +633,26 @@
             prato.autor || prato.Autor || "Desconhecido"
           } em ${formatDate(prato.dataPublicao)}`;
           dishDescription.textContent = prato.descricao;
+
+          // Exibir botão de deletar para o autor do prato
+          if (isLoggedIn && String(prato.usuarioId || prato.UsuarioId) === String(currentUserId)) {
+            deleteBtn.style.display = "inline-block";
+            deleteBtn.onclick = async () => {
+              if (confirm("Tem certeza que deseja apagar esta publicação?")) {
+                const res = await fetch(`/api/publicacoes/Deletar/${prato.idPost}?usuarioId=${currentUserId}`, {
+                  method: "DELETE"
+                });
+                if (res.ok) {
+                  alert("Publicação removida com sucesso!");
+                  window.location.href = "/index.html";
+                } else {
+                  alert("Erro ao remover publicação.");
+                }
+              }
+            };
+          } else {
+            deleteBtn.style.display = "none";
+          }
         } catch {
           dishTitle.textContent = "Erro ao carregar prato.";
         }
