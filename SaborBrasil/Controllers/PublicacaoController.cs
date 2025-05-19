@@ -133,5 +133,6 @@ public class PublicacaoController : ControllerBase
         _context.SaveChanges();
 
         return Ok(new { message = "Publicação removida com sucesso!" });
+        
     }
 }
