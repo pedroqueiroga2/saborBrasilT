@@ -386,6 +386,20 @@
           padding: 0;
         }
       }
+      .edit-comment-btn {
+        background: var(--primary-color);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 0.2rem 0.8rem;
+        font-size: 0.95rem;
+        cursor: pointer;
+        margin-left: 0.5rem;
+        transition: background 0.2s;
+      }
+      .edit-comment-btn:hover {
+        background: #c05e0c;
+      }
     </style>
     <!-- Ícones Font Awesome CDN -->
     <link
@@ -706,6 +720,19 @@
               comment.data || comment.created_At || new Date()
             );
             c.querySelector(".comment-text").textContent = comment.descricao;
+            // Corrigido: compara como string para garantir igualdade
+            if (isLoggedIn && String(comment.Id_Usuario || comment.id_Usuario) === String(currentUserId)) {
+              const editBtn = document.createElement("button");
+              editBtn.textContent = "Editar";
+              editBtn.className = "edit-comment-btn";
+              editBtn.style.marginLeft = "10px";
+              editBtn.onclick = function() {
+                // Busca o .comment-text dentro do mesmo comentário do botão
+                const commentTextElem = this.closest('.comment').querySelector('.comment-text');
+                showEditComment(comment, commentTextElem);
+              };
+              c.querySelector(".comment-header").appendChild(editBtn);
+            }
             commentsList.appendChild(c);
           });
           if (comments.length > 3) {
@@ -796,6 +823,50 @@
         await loadComments();
         updateCommentForm();
       });
+
+      function showEditComment(comment, commentTextElem) {
+  const originalText = comment.descricao;
+  const textarea = document.createElement("textarea");
+  textarea.value = originalText;
+  textarea.style.width = "100%";
+  textarea.style.minHeight = "60px";
+  commentTextElem.replaceWith(textarea);
+
+  const saveBtn = document.createElement("button");
+  saveBtn.textContent = "Salvar";
+  saveBtn.className = "submit-comment";
+  saveBtn.style.marginTop = "8px";
+
+  textarea.parentNode.appendChild(saveBtn);
+
+  saveBtn.onclick = async () => {
+    const novoTexto = textarea.value.trim();
+    if (!novoTexto) {
+      alert("O comentário não pode ficar vazio.");
+      return;
+    }
+    saveBtn.disabled = true; // Evita múltiplos envios
+    try {
+      const commentId = comment.IdComentario || comment.idComentario;
+      const res = await fetch(`/api/comentarios/${commentId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Descricao: novoTexto,
+          Id_Usuario: Number(currentUserId) // <-- ENVIE COMO NÚMERO
+        }),
+      });
+      if (res.ok) {
+        await loadComments();
+      } else {
+        alert("Erro ao editar comentário.");
+      }
+    } catch {
+      alert("Erro ao editar comentário.");
+    }
+    saveBtn.disabled = false;
+  };
+}
     </script>
   </body>
 </html>
