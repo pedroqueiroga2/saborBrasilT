@@ -33,7 +33,7 @@ public class PublicacaoController : ControllerBase
                 publicacao.Imagem = "/uploads/" + imagem.FileName;
             }
 
-            
+
 
             Console.WriteLine($"Nome: {publicacao.Nome}, Descricao: {publicacao.Descricao}, Imagem: {publicacao.Imagem}");
 
@@ -49,7 +49,7 @@ public class PublicacaoController : ControllerBase
             Console.WriteLine("ERRO AO CADASTRAR PUBLICAÇÃO: " + ex.Message);
             return BadRequest(new { message = "Erro ao criar publicação: " + ex.Message });
         }
-        
+
     }
 
     [HttpGet("Listar")]
@@ -58,7 +58,8 @@ public class PublicacaoController : ControllerBase
         var publicacoes = _context.Publicacoes.Join(_context.Usuarios,
               pub => pub.UsuarioId,
               user => user.IdUsuario,
-              (pub, user) => new {
+              (pub, user) => new
+              {
                   pub.IdPost,
                   pub.Nome,
                   pub.Descricao,
@@ -90,7 +91,7 @@ public class PublicacaoController : ControllerBase
         _context.SaveChanges();
         return Ok(new { message = "Like registrado!" });
     }
-    
+
 
     [HttpDelete("Like")]
     public IActionResult RemoverLike([FromBody] LikeRequest req)
@@ -117,4 +118,6 @@ public class PublicacaoController : ControllerBase
         var liked = _context.Likes.Any(l => l.IdPost == postId && l.IdUsuario == userId);
         return Ok(new { liked });
     }
+
+    
 }
