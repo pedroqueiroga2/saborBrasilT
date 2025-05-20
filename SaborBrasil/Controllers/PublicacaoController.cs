@@ -37,6 +37,7 @@ public class PublicacaoController : ControllerBase
                 publicacao.Imagem = "/uploads/" + uniqueName;
             }
 
+
             _context.Publicacoes.Add(publicacao);
             _context.SaveChanges();
 
@@ -47,7 +48,7 @@ public class PublicacaoController : ControllerBase
             Console.WriteLine("ERRO AO CADASTRAR PUBLICAÇÃO: " + ex.Message);
             return BadRequest(new { message = "Erro ao criar publicação: " + ex.Message });
         }
-        
+
     }
 
     [HttpGet("Listar")]
@@ -56,7 +57,8 @@ public class PublicacaoController : ControllerBase
         var publicacoes = _context.Publicacoes.Join(_context.Usuarios,
               pub => pub.UsuarioId,
               user => user.IdUsuario,
-              (pub, user) => new {
+              (pub, user) => new
+              {
                   pub.IdPost,
                   pub.Nome,
                   pub.Descricao,
@@ -88,7 +90,7 @@ public class PublicacaoController : ControllerBase
         _context.SaveChanges();
         return Ok(new { message = "Like registrado!" });
     }
-    
+
 
     [HttpDelete("Like")]
     public IActionResult RemoverLike([FromBody] LikeRequest req)
@@ -114,5 +116,23 @@ public class PublicacaoController : ControllerBase
     {
         var liked = _context.Likes.Any(l => l.IdPost == postId && l.IdUsuario == userId);
         return Ok(new { liked });
+    }
+
+    [HttpDelete("Deletar/{idPost}")]
+    public IActionResult Deletar(int idPost, [FromQuery] int usuarioId)
+    {
+        var publicacao = _context.Publicacoes.FirstOrDefault(p => p.IdPost == idPost);
+        if (publicacao == null)
+            return NotFound(new { message = "Publicação não encontrada." });
+
+        if (publicacao.UsuarioId != usuarioId)
+            return Forbid();
+
+        // Remova apenas a publicação!
+        _context.Publicacoes.Remove(publicacao);
+        _context.SaveChanges();
+
+        return Ok(new { message = "Publicação removida com sucesso!" });
+        
     }
 }
