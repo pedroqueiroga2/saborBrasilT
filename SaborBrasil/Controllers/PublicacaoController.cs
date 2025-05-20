@@ -25,20 +25,18 @@ public class PublicacaoController : ControllerBase
                 if (!Directory.Exists(uploads))
                     Directory.CreateDirectory(uploads);
 
-                var filePath = Path.Combine(uploads, imagem.FileName);
+                // Gera um nome único para a imagem
+                var ext = Path.GetExtension(imagem.FileName);
+                var uniqueName = $"{Guid.NewGuid()}{ext}";
+                var filePath = Path.Combine(uploads, uniqueName);
+
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     imagem.CopyTo(stream);
                 }
-                publicacao.Imagem = "/uploads/" + imagem.FileName;
+                publicacao.Imagem = "/uploads/" + uniqueName;
             }
 
-
-
-            Console.WriteLine($"Nome: {publicacao.Nome}, Descricao: {publicacao.Descricao}, Imagem: {publicacao.Imagem}");
-
-
-            //publicacao.DataPublicao = DateTime.Now;
             _context.Publicacoes.Add(publicacao);
             _context.SaveChanges();
 
