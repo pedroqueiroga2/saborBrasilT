@@ -215,6 +215,36 @@
       .dish-actions, .dish-actions * {
         cursor: default !important;
       }
+      @media (max-width: 600px) {
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+          padding: 1.2rem 1rem;
+        }
+        .logo {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+          width: 100%;
+          text-align: left;
+        }
+        .auth-buttons {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+        .auth-buttons button {
+          width: 60%;
+          min-width: 120px;
+          max-width: 200px;
+          margin-left: 0;
+          margin-bottom: 0;
+          padding: 0.5rem 0.8rem;
+          font-size: 1rem;
+          align-self: flex-start;
+        }
+      }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
   </head>
