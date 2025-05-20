@@ -12,12 +12,12 @@ namespace SaborBrasil.Models
         public int IdPost { get; set; }
 
         [Required]
-        [MaxLength(45)]
+        
         [Column("nome")]
         public string Nome { get; set; } = string.Empty;
 
         [Required]
-        [MaxLength(255)]
+        
         [Column("descricao")]
         public string Descricao { get; set; } = string.Empty;
 
