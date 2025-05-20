@@ -71,6 +71,7 @@
         transition: transform 0.15s;
         margin-bottom: 2rem;
         height: 100%; /* NOVO: faz o card ocupar toda a altura do grid */
+        cursor: pointer;
       }
       .dish-card:hover {
         transform: translateY(-6px) scale(1.01);
@@ -211,6 +212,9 @@
         color: var(--dark-gray);
         padding: 1.5rem 0;
       }
+      .dish-actions, .dish-actions * {
+        cursor: default !important;
+      }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
   </head>
@@ -348,7 +352,9 @@
         img.alt = prato.nome;
         title.textContent = prato.nome;
         meta.textContent = `Publicado por: ${prato.autor || prato.Autor || "Desconhecido"} em ${formatDate(prato.dataPublicao)}`;
-        desc.textContent = prato.descricao;
+        desc.textContent = prato.descricao.length > 150
+          ? prato.descricao.substring(0, 150) + "..."
+          : prato.descricao;
 
         // Carregar likes do backend
         try {
@@ -411,10 +417,9 @@
           }
         });
 
-        img.addEventListener("click", () => {
-          window.location.href = `/uploads/product.html?id=${prato.idPost}`;
-        });
-        title.addEventListener("click", () => {
+        const cardDiv = card.querySelector('.dish-card');
+        cardDiv.addEventListener("click", function (e) {
+          if (e.target.closest('.like-btn')) return;
           window.location.href = `/uploads/product.html?id=${prato.idPost}`;
         });
 
