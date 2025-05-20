@@ -121,6 +121,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
 </head>
 <body>
     <div class="container">
@@ -147,9 +148,12 @@
                 <input type="email" id="email" name="Email" required placeholder="Digite seu e-mail">
                 <div class="error-message" id="email-error"></div>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="position: relative;">
                 <label for="senha" class="required-field">Senha</label>
-                <input type="password" id="senha" name="Senha" required placeholder="Crie uma senha segura" minlength="8">
+                <input type="password" id="senha" name="Senha" required placeholder="Crie uma senha segura" minlength="8" style="padding-right: 38px;">
+                <span id="toggleSenha" style="position:absolute; right:12px; top:38px; cursor:pointer; color:#888; font-size:1.2rem;">
+                    <i class="fa-regular fa-eye" id="senha-eye"></i>
+                </span>
                 <div class="error-message" id="senha-error"></div>
                 <div class="password-hint">Mínimo 8 caracteres, com letras maiúsculas, minúsculas, números e símbolo.</div>
             </div>
@@ -294,6 +298,21 @@
                 }
             } catch (err) {
                 alert("Erro ao conectar com o servidor.");
+            }
+        });
+
+        // Mostrar/ocultar senha
+        document.getElementById('toggleSenha').addEventListener('click', function() {
+            const senhaInput = document.getElementById('senha');
+            const eyeIcon = document.getElementById('senha-eye');
+            if (senhaInput.type === "password") {
+                senhaInput.type = "text";
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                senhaInput.type = "password";
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
             }
         });
     </script>
