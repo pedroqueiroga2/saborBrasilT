@@ -35,10 +35,10 @@ namespace SaborBrasil.Models
         [Column("excluido")]
         public bool Excluido { get; set; } = false;
 
-        [Column("data_exclusao")]
+        [Column("dataExclusao")]
         public DateTime? DataExclusao { get; set; }
 
-        [Column("excluido_por")]
+        [Column("excluidoPor")]
         public int? ExcluidoPor { get; set; }
 
     }
