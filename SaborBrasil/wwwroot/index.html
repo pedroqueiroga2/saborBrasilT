@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sabor do Brasil - Pratos e Comentários</title>
+    <style>
+      :root {
+        --primary-color: #d97014;
+        --secondary-color: #c2bebe;
+        --text-color: #333;
+        --light-color: #f5f5f5;
+        --white: #fff;
+        --dark-gray: #555;
+        --light-gray: #eee;
+        --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      }
+      body {
+        background: var(--light-color);
+        color: var(--text-color);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+      }
+      header {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 1.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .logo {
+        font-size: 2rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+      .auth-buttons button {
+        background: var(--white);
+        color: var(--primary-color);
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        font-weight: bold;
+        margin-left: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+      .auth-buttons button:hover {
+        background: var(--primary-color);
+        color: var(--white);
+      }
+      .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+      .dish-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+      }
+      .dish-card {
+        background: var(--white);
+        border-radius: 18px;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.15s;
+        margin-bottom: 2rem;
+        height: 100%; /* NOVO: faz o card ocupar toda a altura do grid */
+        cursor: pointer;
+      }
+      .dish-card:hover {
+        transform: translateY(-6px) scale(1.01);
+        box-shadow: 0 8px 32px rgba(217, 112, 20, 0.1);
+      }
+      .dish-image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        background: var(--secondary-color);
+      }
+      .dish-content {
+        padding: 1.5rem;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .dish-title {
+        font-size: 1.4rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+      .dish-meta {
+        font-size: 0.95rem;
+        color: var(--dark-gray);
+        margin-bottom: 1rem;
+      }
+      .dish-description {
+        margin-bottom: 1.2rem;
+        color: var(--text-color);
+        font-size: 1.08rem;
+        flex: 0 0 auto;
+      }
+      .dish-actions {
+        display: flex;
+        gap: 18px;
+        margin-top: auto;      /* NOVO: empurra os botões para o final do card */
+        margin-bottom: 0;      /* Remove o margin-bottom antigo */
+        align-items: flex-end; /* Garante alinhamento na base */
+      }
+      .action-btn {
+        background: var(--light-gray);
+        color: var(--primary-color);
+        border: none;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.2s;
+      }
+      .action-btn:hover {
+        background: var(--primary-color);
+        color: var(--white);
+      }
+      .like-count {
+        font-size: 1rem;
+        font-weight: bold;
+      }
+      .comments-section {
+        background: var(--light-gray);
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        margin-top: 1.5rem;
+      }
+      .section-title {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+      }
+      .comment-form {
+        margin-bottom: 1.2rem;
+      }
+      .comment-input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--secondary-color);
+        border-radius: 4px;
+        font-size: 1rem;
+        margin-bottom: 0.7rem;
+        min-height: 70px;
+        resize: vertical;
+      }
+      .submit-comment {
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .submit-comment:hover {
+        background: #c05e0c;
+      }
+      .comments-list {
+        margin-top: 1rem;
+      }
+      .comment {
+        background: var(--white);
+        border-radius: 8px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+        padding: 1rem 1.2rem;
+        margin-bottom: 1rem;
+      }
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
+      .comment-author {
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+      .comment-date {
+        font-size: 0.85rem;
+        color: var(--dark-gray);
+      }
+      .comment-text {
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+      }
+      .login-message {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-weight: bold;
+      }
+      .loading {
+        text-align: center;
+        color: var(--dark-gray);
+        padding: 1.5rem 0;
+      }
+      .dish-actions, .dish-actions * {
+        cursor: default !important;
+      }
+      @media (max-width: 600px) {
+        header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+          padding: 1.2rem 1rem;
+        }
+        .logo {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+          width: 100%;
+          text-align: left;
+        }
+        .auth-buttons {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+        .auth-buttons button {
+          width: 60%;
+          min-width: 120px;
+          max-width: 200px;
+          margin-left: 0;
+          margin-bottom: 0;
+          padding: 0.5rem 0.8rem;
+          font-size: 1rem;
+          align-self: flex-start;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Sabor do Brasil</div>
+      <div class="auth-buttons">
+        <button id="login-btn" onclick="window.location.href='login.html'">
+          Login
+        </button>
+        <button
+          id="register-btn"
+          onclick="window.location.href='Cadastro.html'"
+        >
+          Cadastrar
+        </button>
+        <button id="logout-btn" style="display: none">Sair</button>
+        <button
+          id="add-dish-btn"
+          style="display: none"
+          onclick="window.location.href='Cadastro de Produto.html'"
+        >
+          +
+        </button>
+      </div>
+    </header>
+    <div class="container">
+      <h2 class="section-title" style="font-size:2rem;">Pratos em Destaque</h2>
+      <div id="dish-list" class="dish-list">
+        <div class="loading">Carregando pratos...</div>
+      </div>
+    </div>
+    <template id="dish-card-template">
+      <div class="dish-card">
+        <img class="dish-image" src="" alt="Imagem do prato" />
+        <div class="dish-content">
+          <div class="dish-title"></div>
+          <div class="dish-meta"></div>
+          <div class="dish-description"></div>
+          <div class="dish-actions">
+            <button class="action-btn like-btn">
+              <i class="fa-regular fa-heart"></i>
+              <span class="like-count">0</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template id="comment-template">
+      <div class="comment">
+        <div class="comment-header">
+          <span class="comment-author"></span>
+          <span class="comment-date"></span>
+        </div>
+        <div class="comment-text"></div>
+      </div>
+    </template>
+    <script>
+      // Estado de login
+      let isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      let currentUserId = localStorage.getItem("userId");
+
+      // Elementos
+      const dishList = document.getElementById("dish-list");
+      const dishCardTemplate = document.getElementById("dish-card-template");
+      const commentTemplate = document.getElementById("comment-template");
+      const loginBtn = document.getElementById("login-btn");
+      const registerBtn = document.getElementById("register-btn");
+      const logoutBtn = document.getElementById("logout-btn");
+      const addDishBtn = document.getElementById("add-dish-btn");
+
+      // Botões de autenticação
+      function updateAuthButtons() {
+        if (isLoggedIn) {
+          loginBtn.style.display = "none";
+          registerBtn.style.display = "none";
+          logoutBtn.style.display = "inline-block";
+          addDishBtn.style.display = "inline-block";
+        } else {
+          loginBtn.style.display = "inline-block";
+          registerBtn.style.display = "inline-block";
+          logoutBtn.style.display = "none";
+          addDishBtn.style.display = "none";
+        }
+      }
+      updateAuthButtons();
+
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("userId");
+        window.location.reload();
+      });
+
+      // Carregar pratos do backend
+      async function loadDishes() {
+        try {
+          const response = await fetch("/api/publicacoes/Listar");
+          const pratos = await response.json();
+          dishList.innerHTML = "";
+          if (!pratos.length) {
+            dishList.innerHTML =
+              '<div class="loading">Nenhum prato cadastrado.</div>';
+            return;
+          }
+          for (const prato of pratos) {
+            await renderDishCard(prato);
+          }
+        } catch (err) {
+          dishList.innerHTML = '<div class="loading">Erro ao carregar pratos.</div>';
+        }
+      }
+
+      // Função para verificar se o usuário já curtiu
+      async function userLiked(postId, userId) {
+        const res = await fetch(`/api/publicacoes/UserLiked?postId=${postId}&userId=${userId}`);
+        if (!res.ok) return false;
+        const data = await res.json();
+        return data.liked; // true ou false
+      }
+
+      // Renderizar card do prato
+      async function renderDishCard(prato) {
+        const card = dishCardTemplate.content.cloneNode(true);
+        const img = card.querySelector(".dish-image");
+        const title = card.querySelector(".dish-title");
+        const meta = card.querySelector(".dish-meta");
+        const desc = card.querySelector(".dish-description");
+        const likeBtn = card.querySelector(".like-btn");
+        const likeIcon = card.querySelector(".fa-heart");
+        const likeCount = card.querySelector(".like-count");
+        let liked = false;
+
+        // Dados do prato
+        img.src = prato.imagem || "https://via.placeholder.com/600x220?text=Sem+Imagem";
+        img.alt = prato.nome;
+        title.textContent = prato.nome;
+        meta.textContent = `Publicado por: ${prato.autor || prato.Autor || "Desconhecido"} em ${formatDate(prato.dataPublicao)}`;
+        desc.textContent = prato.descricao.length > 150
+          ? prato.descricao.substring(0, 150) + "..."
+          : prato.descricao;
+
+        // Carregar likes do backend
+        try {
+          const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
+          likeCount.textContent = data.likes ?? 0;
+        } catch {
+          likeCount.textContent = 0;
+        }
+
+        if (isLoggedIn) {
+          liked = await userLiked(prato.idPost, currentUserId);
+          if (liked) {
+            likeIcon.classList.remove("fa-regular");
+            likeIcon.classList.add("fa-solid");
+          } else {
+            likeIcon.classList.remove("fa-solid");
+            likeIcon.classList.add("fa-regular");
+          }
+        }
+
+        // Evento de like
+        likeBtn.addEventListener("click", async () => {
+          if (!isLoggedIn) {
+            alert("Você precisa estar logado para curtir.");
+            return;
+          }
+
+          let likedNow = await userLiked(prato.idPost, currentUserId);
+
+          if (!likedNow) {
+            // Curtir
+            const res = await fetch("/api/publicacoes/Like", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ idPost: prato.idPost, idUsuario: currentUserId }),
+            });
+            if (res.ok) {
+              likeIcon.classList.remove("fa-regular");
+              likeIcon.classList.add("fa-solid");
+              const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
+              likeCount.textContent = data.likes;
+            } else {
+              alert("Você já curtiu esse prato.");
+            }
+          } else {
+            // Remover like
+            const res = await fetch("/api/publicacoes/Like", {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ idPost: prato.idPost, idUsuario: currentUserId }),
+            });
+            if (res.ok) {
+              likeIcon.classList.remove("fa-solid");
+              likeIcon.classList.add("fa-regular");
+              const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
+              likeCount.textContent = data.likes;
+            } else {
+              alert("Erro ao remover like.");
+            }
+          }
+        });
+
+        const cardDiv = card.querySelector('.dish-card');
+        cardDiv.addEventListener("click", function (e) {
+          if (e.target.closest('.like-btn')) return;
+          window.location.href = `/uploads/product.html?id=${prato.idPost}`;
+        });
+
+        dishList.appendChild(card);
+      }
+
+      // Formatar data
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return (
+          date.toLocaleDateString("pt-BR") +
+          " às " +
+          date.toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        );
+      }
+
+      // Inicialização
+      document.addEventListener("DOMContentLoaded", loadDishes);
+    </script>
+  </body>
+</html>
