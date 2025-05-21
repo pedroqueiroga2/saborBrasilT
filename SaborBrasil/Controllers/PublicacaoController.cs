@@ -127,8 +127,11 @@ public class PublicacaoController : ControllerBase
         if (publicacao.UsuarioId != usuarioId)
             return Forbid();
 
-        // Remova apenas a publicação!
-        _context.Publicacoes.Remove(publicacao);
+        publicacao.Excluido = true;
+        publicacao.DataExclusao = DateTime.Now;
+        publicacao.ExcluidoPor = usuarioId;
+        
+        
         _context.SaveChanges();
 
         return Ok(new { message = "Publicação removida com sucesso!" });
