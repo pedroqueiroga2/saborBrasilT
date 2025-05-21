@@ -53,7 +53,8 @@ public class PublicacaoController : ControllerBase
     [HttpGet("Listar")]
     public IActionResult Listar()
     {
-        var publicacoes = _context.Publicacoes.Join(_context.Usuarios,
+        var publicacoes = _context.Publicacoes.Where(pub => !pub.Excluido)
+        .Join(_context.Usuarios,
               pub => pub.UsuarioId,
               user => user.IdUsuario,
               (pub, user) => new
