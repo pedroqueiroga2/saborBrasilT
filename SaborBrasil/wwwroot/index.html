@@ -13,447 +13,768 @@
         --white: #fff;
         --dark-gray: #555;
         --light-gray: #eee;
+        --black: #000000;
         --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
       }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
       body {
         background: var(--light-color);
         color: var(--text-color);
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
         min-height: 100vh;
-      }
-      header {
-        background: var(--primary-color);
-        color: var(--white);
-        padding: 1.5rem 2rem;
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        flex-direction: column;
       }
-      .logo {
-        font-size: 2rem;
-        font-weight: bold;
-        letter-spacing: 2px;
-      }
-      .auth-buttons button {
-        background: var(--white);
-        color: var(--primary-color);
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: 6px;
-        font-weight: bold;
-        margin-left: 1rem;
-        cursor: pointer;
-        transition: background 0.2s, color 0.2s;
-      }
-      .auth-buttons button:hover {
-        background: var(--primary-color);
-        color: var(--white);
-      }
-      .container {
-        max-width: 1200px;
-        margin: 30px auto;
-        padding: 0 20px;
-      }
-      .dish-list {
+      
+      .main-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 2rem;
-      }
-      .dish-card {
-        background: var(--white);
-        border-radius: 18px;
-        box-shadow: var(--card-shadow);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.15s;
-        margin-bottom: 2rem;
-        height: 100%; /* NOVO: faz o card ocupar toda a altura do grid */
-        cursor: pointer;
-      }
-      .dish-card:hover {
-        transform: translateY(-6px) scale(1.01);
-        box-shadow: 0 8px 32px rgba(217, 112, 20, 0.1);
-      }
-      .dish-image {
+        grid-template-columns: 300px 1fr 250px;
+        gap: 20px;
+        flex: 1;
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
         width: 100%;
-        height: 220px;
-        object-fit: cover;
-        background: var(--secondary-color);
       }
-      .dish-content {
-        padding: 1.5rem;
-        flex: 1 1 auto;
+      
+      /* Primeira coluna - Perfil */
+      .profile-section {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        height: fit-content;
+      }
+      
+      .company-logo {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        margin-bottom: 15px;
+      }
+      
+      .company-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+      }
+      
+      .divider-line {
+        height: 3px;
+        background: var(--primary-color);
+        margin-bottom: 20px;
+        border-radius: 2px;
+      }
+      
+      .stats-container {
         display: flex;
         flex-direction: column;
-        height: 100%;
+        gap: 15px;
       }
-      .dish-title {
-        font-size: 1.4rem;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-      }
-      .dish-meta {
-        font-size: 0.95rem;
-        color: var(--dark-gray);
-        margin-bottom: 1rem;
-      }
-      .dish-description {
-        margin-bottom: 1.2rem;
-        color: var(--text-color);
-        font-size: 1.08rem;
-        flex: 0 0 auto;
-      }
-      .dish-actions {
-        display: flex;
-        gap: 18px;
-        margin-top: auto;      /* NOVO: empurra os botões para o final do card */
-        margin-bottom: 0;      /* Remove o margin-bottom antigo */
-        align-items: flex-end; /* Garante alinhamento na base */
-      }
-      .action-btn {
-        background: var(--light-gray);
-        color: var(--primary-color);
-        border: none;
-        border-radius: 4px;
-        padding: 0.5rem 1rem;
-        font-weight: bold;
-        cursor: pointer;
+      
+      .stat-item {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 10px;
+        padding: 10px;
+        background: var(--light-gray);
+        border-radius: 8px;
+      }
+      
+      .stat-icon {
+        width: 20px;
+        height: 20px;
+      }
+      
+      .stat-text {
+        font-weight: bold;
+        color: var(--text-color);
+      }
+      
+      /* Segunda coluna - Main */
+      .main-section {
+        border: 2px solid var(--secondary-color);
+        border-radius: 12px;
+        padding: 20px;
+        background: var(--white);
+      }
+      
+      .main-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      
+      .main-title {
+        font-size: 2rem;
+        color: var(--black);
+        font-weight: bold;
+      }
+      
+      .publications-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .publication-card {
+        border: 1px solid var(--light-gray);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--white);
+        transition: transform 0.2s;
+      }
+      
+      .publication-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--card-shadow);
+      }
+      
+      .publication-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+      }
+      
+      .publication-content {
+        padding: 20px;
+      }
+      
+      .publication-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+        text-align: left;
+      }
+      
+      .publication-location {
+        color: var(--dark-gray);
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+      }
+      
+      .publication-actions {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+      
+      .action-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 6px;
         transition: background 0.2s;
       }
-      .action-btn:hover {
+      
+      .action-item:hover {
+        background: var(--light-gray);
+      }
+      
+      .action-item.active {
         background: var(--primary-color);
         color: var(--white);
       }
-      .like-count {
-        font-size: 1rem;
-        font-weight: bold;
+      
+      .action-item.active .action-count {
+        color: var(--white);
       }
-      .comments-section {
-        background: var(--light-gray);
+      
+      .action-icon {
+        width: 20px;
+        height: 20px;
+      }
+      
+      .action-count {
+        font-weight: bold;
+        color: var(--text-color);
+      }
+      
+      /* Terceira coluna - Login */
+      .login-section {
+        background: var(--white);
         border-radius: 12px;
-        padding: 1.2rem 1.5rem;
-        margin-top: 1.5rem;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
-      .section-title {
-        color: var(--primary-color);
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-        font-weight: bold;
-      }
-      .comment-form {
-        margin-bottom: 1.2rem;
-      }
-      .comment-input {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid var(--secondary-color);
-        border-radius: 4px;
-        font-size: 1rem;
-        margin-bottom: 0.7rem;
-        min-height: 70px;
-        resize: vertical;
-      }
-      .submit-comment {
+      
+      .login-button {
         background: var(--primary-color);
         color: var(--white);
         border: none;
-        padding: 0.6rem 1.5rem;
-        border-radius: 4px;
+        padding: 12px 30px;
+        border-radius: 8px;
         font-weight: bold;
-        font-size: 1rem;
+        font-size: 1.1rem;
         cursor: pointer;
         transition: background 0.2s;
       }
-      .submit-comment:hover {
+      
+      .login-button:hover {
         background: #c05e0c;
       }
-      .comments-list {
-        margin-top: 1rem;
+      
+      /* Footer */
+      .footer {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 20px;
+        text-align: center;
+        margin-top: auto;
       }
-      .comment {
-        background: var(--white);
-        border-radius: 8px;
-        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
-        padding: 1rem 1.2rem;
-        margin-bottom: 1rem;
-      }
-      .comment-header {
+      
+      .footer-content {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        margin-bottom: 0.5rem;
+        gap: 20px;
+        flex-wrap: wrap;
       }
-      .comment-author {
+      
+      .footer-logo {
+        font-size: 1.2rem;
         font-weight: bold;
+      }
+      
+      .social-icons {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+      
+      .social-icon {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+      
+      .social-icon:hover {
+        opacity: 0.8;
+      }
+      
+      .copyright {
+        margin-left: 20px;
+      }
+      
+      /* Modal de Login */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      
+      .modal-content {
+        background-color: var(--white);
+        margin: 15% auto;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+      }
+      
+      .modal-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
         color: var(--primary-color);
       }
-      .comment-date {
-        font-size: 0.85rem;
-        color: var(--dark-gray);
+      
+      .modal-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
       }
-      .comment-text {
-        margin-bottom: 0.5rem;
+      
+      .modal-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      
+      .modal-btn-primary {
+        background: var(--primary-color);
+        color: var(--white);
+      }
+      
+      .modal-btn-secondary {
+        background: var(--light-gray);
         color: var(--text-color);
       }
-      .login-message {
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-        font-weight: bold;
-      }
+      
       .loading {
         text-align: center;
         color: var(--dark-gray);
-        padding: 1.5rem 0;
+        padding: 2rem 0;
+        font-size: 1.1rem;
       }
-      .dish-actions, .dish-actions * {
-        cursor: default !important;
+      
+      /* Responsividade */
+      @media (max-width: 1200px) {
+        .main-container {
+          grid-template-columns: 250px 1fr 200px;
+          gap: 15px;
+        }
       }
+      
+      @media (max-width: 900px) {
+        .main-container {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto auto auto;
+        }
+        
+        .profile-section,
+        .login-section {
+          order: 2;
+        }
+        
+        .main-section {
+          order: 1;
+        }
+      }
+      
       @media (max-width: 600px) {
-        header {
+        .main-container {
+          padding: 10px;
+        }
+        
+        .footer-content {
           flex-direction: column;
-          align-items: flex-start;
-          gap: 1rem;
-          padding: 1.2rem 1rem;
+          gap: 10px;
         }
-        .logo {
-          font-size: 1.5rem;
-          margin-bottom: 0.5rem;
-          width: 100%;
-          text-align: left;
-        }
-        .auth-buttons {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-        .auth-buttons button {
-          width: 60%;
-          min-width: 120px;
-          max-width: 200px;
-          margin-left: 0;
-          margin-bottom: 0;
-          padding: 0.5rem 0.8rem;
-          font-size: 1rem;
-          align-self: flex-start;
-        }
+      }
+      
+      .stat-icon-fallback,
+      .action-icon-fallback,
+      .social-icon-fallback {
+        margin-right: 5px;
+      }
+      
+      .action-item.active .action-icon-fallback {
+        color: var(--white) !important;
+      }
+      
+      .action-item.active .action-count {
+        color: var(--white);
       }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
   </head>
   <body>
-    <header>
-      <div class="logo">Sabor do Brasil</div>
-      <div class="auth-buttons">
-        <button id="login-btn" onclick="window.location.href='login.html'">
-          Login
-        </button>
-        <button
-          id="register-btn"
-          onclick="window.location.href='Cadastro.html'"
-        >
-          Cadastrar
-        </button>
-        <button id="logout-btn" style="display: none">Sair</button>
-        <button
-          id="add-dish-btn"
-          style="display: none"
-          onclick="window.location.href='Cadastro de Produto.html'"
-        >
-          +
-        </button>
+    <div class="main-container">
+      <!-- Primeira coluna - Perfil -->
+      <div class="profile-section">
+        <img src="anexos/logo/logo_sabor_do_brasil.png" alt="Logo Sabor do Brasil" class="company-logo" onerror="this.style.display='none'" />
+        <div class="company-name">Sabor do Brasil</div>
+        <div class="divider-line"></div>
+        <div class="stats-container">
+          <div class="stat-item">
+            <i class="fas fa-thumbs-up stat-icon-fallback" style="color: var(--primary-color); font-size: 20px; display: none;"></i>
+            <img src="anexos/flecha_cima_vazia.svg" alt="Likes" class="stat-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';" />
+            <span class="stat-text">Total de Likes: <span id="total-likes">0</span></span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-thumbs-down stat-icon-fallback" style="color: var(--primary-color); font-size: 20px; display: none;"></i>
+            <img src="anexos/flecha_baixo_vazia.svg" alt="Dislikes" class="stat-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';" />
+            <span class="stat-text">Total de Dislikes: <span id="total-dislikes">0</span></span>
+          </div>
+        </div>
       </div>
-    </header>
-    <div class="container">
-      <h2 class="section-title" style="font-size:2rem;">Pratos em Destaque</h2>
-      <div id="dish-list" class="dish-list">
-        <div class="loading">Carregando pratos...</div>
+
+      <!-- Segunda coluna - Main -->
+      <div class="main-section">
+        <div class="main-header">
+          <h1 class="main-title">Pratos em Destaque</h1>
+        </div>
+        <div id="publications-container" class="publications-container">
+          <div class="loading">Carregando pratos...</div>
+        </div>
+      </div>
+
+      <!-- Terceira coluna - Login -->
+      <div class="login-section">
+        <button id="login-btn" class="login-button" onclick="window.location.href='login.html'">
+          Entrar
+        </button>
       </div>
     </div>
-    <template id="dish-card-template">
-      <div class="dish-card">
-        <img class="dish-image" src="" alt="Imagem do prato" />
-        <div class="dish-content">
-          <div class="dish-title"></div>
-          <div class="dish-meta"></div>
-          <div class="dish-description"></div>
-          <div class="dish-actions">
-            <button class="action-btn like-btn">
-              <i class="fa-regular fa-heart"></i>
-              <span class="like-count">0</span>
-            </button>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-logo">Sabor do Brasil</div>
+        <div class="social-icons">
+          <i class="fab fa-instagram social-icon-fallback" style="color: var(--white); font-size: 24px; display: none;"></i>
+          <img src="anexos/Instagram.svg" alt="Instagram" class="social-icon" onerror="this.style.display='none'; this.previousElementSibling.style.display='inline-block';" />
+          
+          <i class="fab fa-twitter social-icon-fallback" style="color: var(--white); font-size: 24px; display: none;"></i>
+          <img src="anexos/Twitter.svg" alt="Twitter" class="social-icon" onerror="this.style.display='none'; this.previousElementSibling.style.display='inline-block';" />
+          
+          <i class="fab fa-whatsapp social-icon-fallback" style="color: var(--white); font-size: 24px; display: none;"></i>
+          <img src="anexos/Whatsapp.svg" alt="WhatsApp" class="social-icon" onerror="this.style.display='none'; this.previousElementSibling.style.display='inline-block';" />
+          
+          <i class="fas fa-globe social-icon-fallback" style="color: var(--white); font-size: 24px; display: none;"></i>
+          <img src="anexos/Globe.svg" alt="Website" class="social-icon" onerror="this.style.display='none'; this.previousElementSibling.style.display='inline-block';" />
+        </div>
+        <div class="copyright">Copyright-2024</div>
+      </div>
+    </footer>
+
+    <!-- Modal de Login -->
+    <div id="login-modal" class="modal">
+      <div class="modal-content">
+        <h2 class="modal-title">Login Necessário</h2>
+        <p>Você precisa estar logado para interagir com as publicações.</p>
+        <div class="modal-buttons">
+          <button class="modal-btn modal-btn-primary" onclick="window.location.href='login.html'">
+            Fazer Login
+          </button>
+          <button class="modal-btn modal-btn-secondary" onclick="closeModal()">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Templates -->
+    <template id="publication-template">
+      <div class="publication-card">
+        <img class="publication-image" src="" alt="Imagem do prato" />
+        <div class="publication-content">
+          <h3 class="publication-title"></h3>
+          <p class="publication-location"></p>
+          <div class="publication-actions">
+            <div class="action-item like-action">
+              <i class="fas fa-thumbs-up action-icon-fallback" style="color: var(--primary-color); font-size: 18px; display: none;"></i>
+              <img src="anexos/flecha_cima_vazia.svg" alt="Like" class="action-icon" onerror="this.style.display='none'; this.previousElementSibling.style.display='inline-block';" />
+              <span class="action-count like-count">0</span>
+            </div>
+            <div class="action-item dislike-action">
+              <i class="fas fa-thumbs-down action-icon-fallback" style="color: var(--primary-color); font-size: 18px; display: none;"></i>
+              <img src="anexos/flecha_baixo_vazia.svg" alt="Dislike" class="action-icon" onerror="this.style.display='none'; this.previousElementSibling.style.display='inline-block';" />
+              <span class="action-count dislike-count">0</span>
+            </div>
+            <div class="action-item comment-action">
+              <i class="fas fa-comment action-icon-fallback" style="color: var(--primary-color); font-size: 18px; display: none;"></i>
+              <img src="anexos/chat.svg" alt="Comentários" class="action-icon" onerror="this.style.display='none'; this.previousElementSibling.style.display='inline-block';" />
+              <span class="action-count comment-count">0</span>
+            </div>
           </div>
         </div>
       </div>
     </template>
-    <template id="comment-template">
-      <div class="comment">
-        <div class="comment-header">
-          <span class="comment-author"></span>
-          <span class="comment-date"></span>
-        </div>
-        <div class="comment-text"></div>
-      </div>
-    </template>
+
     <script>
       // Estado de login
       let isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
       let currentUserId = localStorage.getItem("userId");
 
       // Elementos
-      const dishList = document.getElementById("dish-list");
-      const dishCardTemplate = document.getElementById("dish-card-template");
-      const commentTemplate = document.getElementById("comment-template");
+      const publicationsContainer = document.getElementById("publications-container");
+      const publicationTemplate = document.getElementById("publication-template");
       const loginBtn = document.getElementById("login-btn");
-      const registerBtn = document.getElementById("register-btn");
-      const logoutBtn = document.getElementById("logout-btn");
-      const addDishBtn = document.getElementById("add-dish-btn");
+      const loginModal = document.getElementById("login-modal");
+      const totalLikesElement = document.getElementById("total-likes");
+      const totalDislikesElement = document.getElementById("total-dislikes");
 
-      // Botões de autenticação
-      function updateAuthButtons() {
-        if (isLoggedIn) {
-          loginBtn.style.display = "none";
-          registerBtn.style.display = "none";
-          logoutBtn.style.display = "inline-block";
-          addDishBtn.style.display = "inline-block";
-        } else {
-          loginBtn.style.display = "inline-block";
-          registerBtn.style.display = "inline-block";
-          logoutBtn.style.display = "none";
-          addDishBtn.style.display = "none";
+      // Funções do modal
+      function showModal() {
+        loginModal.style.display = "block";
+      }
+
+      function closeModal() {
+        loginModal.style.display = "none";
+      }
+
+      // Fechar modal ao clicar fora
+      window.onclick = function(event) {
+        if (event.target === loginModal) {
+          closeModal();
         }
       }
-      updateAuthButtons();
 
-      logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("userId");
-        window.location.reload();
-      });
+      // Verificar se usuário já curtiu
+      async function userLiked(postId, userId) {
+        try {
+          const res = await fetch(`/api/publicacoes/UserLiked?postId=${postId}&userId=${userId}`);
+          if (!res.ok) return false;
+          const data = await res.json();
+          return data.liked;
+        } catch {
+          return false;
+        }
+      }
+
+      // Verificar se usuário já deu dislike
+      async function userDisliked(postId, userId) {
+        try {
+          const res = await fetch(`/api/publicacoes/UserDisliked?postId=${postId}&userId=${userId}`);
+          if (!res.ok) return false;
+          const data = await res.json();
+          return data.disliked;
+        } catch {
+          return false;
+        }
+      }
+
+      // Carregar estatísticas gerais
+      async function loadGeneralStats() {
+        try {
+          console.log("Carregando estatísticas gerais...");
+          
+          const likesResponse = await fetch("/api/publicacoes/TotalLikes");
+          console.log("Resposta likes:", likesResponse.status);
+          
+          if (likesResponse.ok) {
+            const totalLikes = await likesResponse.json();
+            console.log("Total likes:", totalLikes);
+            totalLikesElement.textContent = totalLikes.total || 0;
+          } else {
+            console.error("Erro ao carregar likes:", likesResponse.status);
+            totalLikesElement.textContent = "0";
+          }
+          
+          // Por enquanto, dislikes sempre será 0
+          totalDislikesElement.textContent = "0";
+          
+        } catch (error) {
+          console.error("Erro ao carregar estatísticas:", error);
+          totalLikesElement.textContent = "0";
+          totalDislikesElement.textContent = "0";
+        }
+      }
 
       // Carregar pratos do backend
       async function loadDishes() {
         try {
           const response = await fetch("/api/publicacoes/Listar");
           const pratos = await response.json();
-          dishList.innerHTML = "";
+          publicationsContainer.innerHTML = "";
+          
           if (!pratos.length) {
-            dishList.innerHTML =
-              '<div class="loading">Nenhum prato cadastrado.</div>';
+            publicationsContainer.innerHTML = '<div class="loading">Nenhum prato cadastrado.</div>';
             return;
           }
+          
           for (const prato of pratos) {
-            await renderDishCard(prato);
+            await renderPublicationCard(prato);
           }
         } catch (err) {
-          dishList.innerHTML = '<div class="loading">Erro ao carregar pratos.</div>';
+          publicationsContainer.innerHTML = '<div class="loading">Erro ao carregar pratos.</div>';
         }
       }
 
-      // Função para verificar se o usuário já curtiu
-      async function userLiked(postId, userId) {
-        const res = await fetch(`/api/publicacoes/UserLiked?postId=${postId}&userId=${userId}`);
-        if (!res.ok) return false;
-        const data = await res.json();
-        return data.liked; // true ou false
-      }
-
-      // Renderizar card do prato
-      async function renderDishCard(prato) {
-        const card = dishCardTemplate.content.cloneNode(true);
-        const img = card.querySelector(".dish-image");
-        const title = card.querySelector(".dish-title");
-        const meta = card.querySelector(".dish-meta");
-        const desc = card.querySelector(".dish-description");
-        const likeBtn = card.querySelector(".like-btn");
-        const likeIcon = card.querySelector(".fa-heart");
+      // Renderizar card da publicação
+      async function renderPublicationCard(prato) {
+        const card = publicationTemplate.content.cloneNode(true);
+        const img = card.querySelector(".publication-image");
+        const title = card.querySelector(".publication-title");
+        const location = card.querySelector(".publication-location");
+        const likeAction = card.querySelector(".like-action");
+        const dislikeAction = card.querySelector(".dislike-action");
+        const commentAction = card.querySelector(".comment-action");
         const likeCount = card.querySelector(".like-count");
-        let liked = false;
+        const dislikeCount = card.querySelector(".dislike-count");
+        const commentCount = card.querySelector(".comment-count");
 
-        // Dados do prato
-        img.src = prato.imagem || "https://via.placeholder.com/600x220?text=Sem+Imagem";
+        // Dados da publicação
+        img.src = prato.imagem || "https://via.placeholder.com/600x250?text=Sem+Imagem";
         img.alt = prato.nome;
         title.textContent = prato.nome;
-        meta.textContent = `Publicado por: ${prato.autor || prato.Autor || "Desconhecido"} em ${formatDate(prato.dataPublicao)}`;
-        desc.textContent = prato.descricao.length > 150
-          ? prato.descricao.substring(0, 150) + "..."
-          : prato.descricao;
+        location.textContent = `${prato.local || "Local não informado"} - ${prato.cidade || "Cidade não informada"}`;
 
-        // Carregar likes do backend
+        // Carregar contadores
         try {
-          const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
-          likeCount.textContent = data.likes ?? 0;
-        } catch {
-          likeCount.textContent = 0;
+          // Likes
+          const likesResponse = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`);
+          if (likesResponse.ok) {
+            const likesData = await likesResponse.json();
+            likeCount.textContent = likesData.likes || 0;
+          }
+          
+          // Dislikes
+          const dislikesResponse = await fetch(`/api/publicacoes/DislikesCount/${prato.idPost}`);
+          if (dislikesResponse.ok) {
+            const dislikesData = await dislikesResponse.json();
+            dislikeCount.textContent = dislikesData.dislikes || 0;
+          }
+          
+          // Comentários
+          const commentsResponse = await fetch(`/api/publicacoes/CommentsCount/${prato.idPost}`);
+          if (commentsResponse.ok) {
+            const commentsData = await commentsResponse.json();
+            commentCount.textContent = commentsData.comments || 0;
+          }
+        } catch (error) {
+          console.error("Erro ao carregar contadores:", error);
+          likeCount.textContent = "0";
+          dislikeCount.textContent = "0";
+          commentCount.textContent = "0";
         }
 
+        // Verificar estado atual do usuário
         if (isLoggedIn) {
-          liked = await userLiked(prato.idPost, currentUserId);
+          const liked = await userLiked(prato.idPost, currentUserId);
+          const disliked = await userDisliked(prato.idPost, currentUserId);
+          
           if (liked) {
-            likeIcon.classList.remove("fa-regular");
-            likeIcon.classList.add("fa-solid");
-          } else {
-            likeIcon.classList.remove("fa-solid");
-            likeIcon.classList.add("fa-regular");
+            likeAction.classList.add("active");
+          }
+          if (disliked) {
+            dislikeAction.classList.add("active");
           }
         }
 
-        // Evento de like
-        likeBtn.addEventListener("click", async () => {
+        // Eventos de interação
+        likeAction.addEventListener("click", async (e) => {
+          e.stopPropagation();
           if (!isLoggedIn) {
-            alert("Você precisa estar logado para curtir.");
+            showModal();
             return;
           }
+          
+          await handleLike(prato.idPost, likeAction, likeCount);
+        });
 
-          let likedNow = await userLiked(prato.idPost, currentUserId);
+        dislikeAction.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          if (!isLoggedIn) {
+            showModal();
+            return;
+          }
+          
+          await handleDislike(prato.idPost, dislikeAction, dislikeCount);
+        });
 
-          if (!likedNow) {
-            // Curtir
+        commentAction.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          if (!isLoggedIn) {
+            showModal();
+            return;
+          }
+          
+          window.location.href = `/uploads/product.html?id=${prato.idPost}`;
+        });
+
+        // Clique no card para ver detalhes
+        const cardDiv = card.querySelector('.publication-card');
+        cardDiv.addEventListener("click", function() {
+          window.location.href = `/uploads/product.html?id=${prato.idPost}`;
+        });
+
+        publicationsContainer.appendChild(card);
+      }
+
+      // Manipular like
+      async function handleLike(postId, actionElement, countElement) {
+        const isLiked = actionElement.classList.contains("active");
+        
+        try {
+          if (!isLiked) {
+            // Dar like
             const res = await fetch("/api/publicacoes/Like", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ idPost: prato.idPost, idUsuario: currentUserId }),
+              body: JSON.stringify({ idPost: postId, idUsuario: currentUserId }),
             });
+            
             if (res.ok) {
-              likeIcon.classList.remove("fa-regular");
-              likeIcon.classList.add("fa-solid");
-              const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
-              likeCount.textContent = data.likes;
+              actionElement.classList.add("active");
+              // Atualizar contador do post
+              const data = await fetch(`/api/publicacoes/LikesCount/${postId}`).then(r => r.json());
+              countElement.textContent = data.likes || 0;
+              // Atualizar estatísticas gerais
+              await loadGeneralStats();
             } else {
-              alert("Você já curtiu esse prato.");
+              const errorData = await res.json();
+              alert(errorData.message || "Erro ao dar like.");
             }
           } else {
             // Remover like
             const res = await fetch("/api/publicacoes/Like", {
               method: "DELETE",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ idPost: prato.idPost, idUsuario: currentUserId }),
+              body: JSON.stringify({ idPost: postId, idUsuario: currentUserId }),
             });
+            
             if (res.ok) {
-              likeIcon.classList.remove("fa-solid");
-              likeIcon.classList.add("fa-regular");
-              const data = await fetch(`/api/publicacoes/LikesCount/${prato.idPost}`).then(r => r.json());
-              likeCount.textContent = data.likes;
+              actionElement.classList.remove("active");
+              // Atualizar contador do post
+              const data = await fetch(`/api/publicacoes/LikesCount/${postId}`).then(r => r.json());
+              countElement.textContent = data.likes || 0;
+              // Atualizar estatísticas gerais
+              await loadGeneralStats();
             } else {
               alert("Erro ao remover like.");
             }
           }
-        });
+        } catch (error) {
+          console.error("Erro ao manipular like:", error);
+          alert("Erro ao processar like. Tente novamente.");
+        }
+      }
 
-        const cardDiv = card.querySelector('.dish-card');
-        cardDiv.addEventListener("click", function (e) {
-          if (e.target.closest('.like-btn')) return;
-          window.location.href = `/uploads/product.html?id=${prato.idPost}`;
-        });
-
-        dishList.appendChild(card);
+      // Manipular dislike
+      async function handleDislike(postId, actionElement, countElement) {
+        const isDisliked = actionElement.classList.contains("active");
+        
+        try {
+          if (!isDisliked) {
+            // Dar dislike (quando implementar)
+            alert("Funcionalidade de dislike será implementada em breve!");
+            // const res = await fetch("/api/publicacoes/Dislike", {
+            //   method: "POST",
+            //   headers: { "Content-Type": "application/json" },
+            //   body: JSON.stringify({ idPost: postId, idUsuario: currentUserId }),
+            // });
+            
+            // if (res.ok) {
+            //   actionElement.classList.add("active");
+            //   const data = await fetch(`/api/publicacoes/DislikesCount/${postId}`).then(r => r.json());
+            //   countElement.textContent = data.dislikes || 0;
+            //   await loadGeneralStats();
+            // }
+          } else {
+            // Remover dislike (quando implementar)
+            alert("Funcionalidade de dislike será implementada em breve!");
+            // const res = await fetch("/api/publicacoes/Dislike", {
+            //   method: "DELETE",
+            //   headers: { "Content-Type": "application/json" },
+            //   body: JSON.stringify({ idPost: postId, idUsuario: currentUserId }),
+            // });
+            
+            // if (res.ok) {
+            //   actionElement.classList.remove("active");
+            //   const data = await fetch(`/api/publicacoes/DislikesCount/${postId}`).then(r => r.json());
+            //   countElement.textContent = data.dislikes || 0;
+            //   await loadGeneralStats();
+            // }
+          }
+        } catch (error) {
+          console.error("Erro ao manipular dislike:", error);
+          alert("Erro ao processar dislike. Tente novamente.");
+        }
       }
 
       // Formatar data
@@ -470,7 +791,10 @@
       }
 
       // Inicialização
-      document.addEventListener("DOMContentLoaded", loadDishes);
+      document.addEventListener("DOMContentLoaded", async () => {
+        await loadDishes();
+        await loadGeneralStats();
+      });
     </script>
   </body>
 </html>

@@ -138,4 +138,53 @@ public class PublicacaoController : ControllerBase
         return Ok(new { message = "Publicação removida com sucesso!" });
 
     }
+
+    [HttpGet("TotalLikes")]
+    public IActionResult TotalLikes()
+    {
+        try
+        {
+            var totalLikes = _context.Likes.Count();
+            return Ok(new { total = totalLikes });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "Erro ao carregar total de likes: " + ex.Message });
+        }
+    }
+
+    [HttpGet("TotalDislikes")]
+    public IActionResult TotalDislikes()
+    {
+        // Como não temos dislikes implementados ainda, vamos retornar 0
+        return Ok(new { total = 0 });
+    }
+
+    [HttpGet("DislikesCount/{postId}")]
+    public IActionResult DislikesCount(int postId)
+    {
+        // Como não temos dislikes implementados ainda, vamos retornar 0
+        return Ok(new { dislikes = 0 });
+    }
+
+    [HttpGet("CommentsCount/{postId}")]
+    public IActionResult CommentsCount(int postId)
+    {
+        try
+        {
+            var commentsCount = _context.Comentarios.Count(c => c.Post_Id == postId);
+            return Ok(new { comments = commentsCount });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "Erro ao carregar comentários: " + ex.Message });
+        }
+    }
+
+    [HttpGet("UserDisliked")]
+    public IActionResult UserDisliked(int postId, int userId)
+    {
+        // Como não temos dislikes implementados ainda, vamos retornar false
+        return Ok(new { disliked = false });
+    }
 }
