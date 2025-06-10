@@ -120,6 +120,54 @@
                 padding: 20px;
             }
         }
+
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            background: var(--white);
+            cursor: pointer;
+        }
+
+        .form-group input[type="file"]:hover {
+            border-color: var(--primary-color);
+        }
+
+        .form-group input[type="file"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(217, 112, 20, 0.2);
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            width: 100%;
+            padding: 0.8rem;
+            padding-right: 38px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            font-size: 1.2rem;
+        }
+
+        .photo-preview-container {
+            margin-top: 10px;
+            text-align: center;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
 </head>
@@ -150,12 +198,21 @@
             </div>
             <div class="form-group" style="position: relative;">
                 <label for="senha" class="required-field">Senha</label>
-                <input type="password" id="senha" name="Senha" required placeholder="Crie uma senha segura" minlength="8" style="padding-right: 38px;">
-                <span id="toggleSenha" style="position:absolute; right:12px; top:38px; cursor:pointer; color:#888; font-size:1.2rem;">
-                    <i class="fa-regular fa-eye" id="senha-eye"></i>
-                </span>
+                <div class="password-container">
+                    <input type="password" id="senha" name="Senha" required placeholder="Digite sua senha">
+                    <span id="toggleSenha" class="password-toggle">
+                        <i class="fa-regular fa-eye" id="senha-eye"></i>
+                    </span>
+                </div>
                 <div class="error-message" id="senha-error"></div>
-                <div class="password-hint">Mínimo 8 caracteres, com letras maiúsculas, minúsculas, números e símbolo.</div>
+            </div>
+            <div class="form-group">
+                <label for="foto-perfil">Foto de Perfil (Opcional)</label>
+                <input type="file" id="foto-perfil" name="fotoPerfil" accept="image/*" class="form-control">
+                <div class="photo-preview-container" style="margin-top: 10px; text-align: center; display: none;">
+                    <img id="photo-preview" src="" alt="Pré-visualização" style="max-width: 150px; max-height: 150px; border-radius: 50%; border: 2px solid var(--primary-color);">
+                </div>
+                <div class="error-message" id="foto-error"></div>
             </div>
             <button type="submit" id="register-btn" class="btn-submit">Cadastrar</button>
         </form>
@@ -177,6 +234,24 @@
         function isValidTelefone(telefone) {
             return /^\d{11}$/.test(telefone);
         }
+
+        // Pré-visualização da foto de perfil
+        document.getElementById('foto-perfil').addEventListener('change', function() {
+            const file = this.files[0];
+            const previewContainer = document.querySelector('.photo-preview-container');
+            const preview = document.getElementById('photo-preview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        });
 
         // Limpar mensagens de erro e aviso
         function clearErrors() {
@@ -278,17 +353,24 @@
 
             // Se tudo ok, envia o formulário via fetch
             try {
+                const formData = new FormData();
+                formData.append('Nome', nome);
+                formData.append('Cpf', cpf);
+                formData.append('Telefone', telefone);
+                formData.append('Email', email);
+                formData.append('Senha', senha);
+                
+                // Adicionar foto se selecionada
+                const fotoInput = document.getElementById('foto-perfil');
+                if (fotoInput.files[0]) {
+                    formData.append('fotoPerfil', fotoInput.files[0]);
+                }
+
                 const res = await fetch('/Usuario/Cadastrar', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        Nome: nome,
-                        Cpf: cpf,
-                        Telefone: telefone,
-                        Email: email,
-                        Senha: senha
-                    })
+                    body: formData
                 });
+                
                 if (res.ok) {
                     // Redireciona para index.html após cadastro
                     window.location.href = "index.html";

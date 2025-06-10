@@ -10,6 +10,7 @@ namespace SaborBrasil.Data
          public DbSet<Publicacao> Publicacoes { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Dislike> Dislikes { get; set; }
 
         public DbSet<Comentario> Comentarios { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
