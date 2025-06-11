@@ -1,31 +1,17 @@
+# Sabor do Brasil
 
+## Descrição do Projeto
 
-# Tutorial Acess by ip
+O **Sabor do Brasil** é uma plataforma colaborativa onde usuários podem compartilhar pratos típicos brasileiros, cadastrar novas receitas com fotos, curtir e comentar publicações de outros usuários. O sistema permite criar uma conta com foto de perfil, visualizar detalhes de cada prato, interagir com a comunidade e explorar a culinária nacional de forma interativa e social.
 
-## 1 - Abra o CMD e digite "ipconfig", isso lhe retornará essa tela:
+## Funcionalidades
 
-
-### copie somente o "IPv4".
-
-
-## 2 - abrir o Powershell como Administrador e executar o seguinte comando:
-
-#### netsh advfirewall firewall add rule name="ASP.NET Core" dir=in action=allo protocol=TCP localport=5172
-
-Esse comando cria uma regra de entrada no firewall do Windows, permitindo conexões TCP vindas de fora para a porta 5172, onde está rodando a aplicação ASP.NET Core.
-
-## 3 - Execute o servidor
-
-![image](https://github.com/user-attachments/assets/400db568-4ee2-4807-b4df-00c5ba9a502b)
-
-## 4 - Adicione o endereço do site
-
-### O endereço é o ip do seu pc (Ipv4) + a porta 5172.
-
-exemplo:
-
-0.0.0.0:5172
-
-
+- **Cadastro e Login de Usuário:** Crie sua conta com nome, CPF, e-mail, senha e foto de perfil.
+- **Foto de Perfil:** Agora é possível adicionar uma foto de perfil no cadastro. Após login, a logo do site é substituída pela foto do usuário.
+- **Adicionar Prato:** Usuários logados podem cadastrar novos pratos com imagem, nome e descrição.
+- **Curtir Pratos:** Usuários logados podem curtir ou descurtir pratos.
+- **Comentários:** Usuários logados podem comentar nos pratos.
+- **Página Principal:** Lista de pratos cadastrados, com imagem, descrição, autor e data.
+- **Detalhes do Prato:** Clique em um prato para ver mais informações e comentários.
 
 
