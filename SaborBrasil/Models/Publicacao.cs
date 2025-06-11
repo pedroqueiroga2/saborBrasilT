@@ -13,12 +13,10 @@ namespace SaborBrasil.Models
         public int IdPost { get; set; }
 
         [Required]
-
         [Column("nome")]
         public string Nome { get; set; } = string.Empty;
 
         [Required]
-
         [Column("descricao")]
         public string Descricao { get; set; } = string.Empty;
 
@@ -32,14 +30,22 @@ namespace SaborBrasil.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Gera automaticamente o valor para a coluna
         public DateTime? DataPublicao { get; set; }
 
+        [Column("local")]
+        public string? Local { get; set; }
+
+        [Column("cidade")]
+        public string? Cidade { get; set; }
+
+        [Column("estado")]
+        public string? Estado { get; set; }
+
         [Column("excluido")]
         public bool Excluido { get; set; } = false;
 
-        [Column("data_exclusao")]
+        [Column("dataExclusao")]
         public DateTime? DataExclusao { get; set; }
 
-        [Column("excluido_por")]
+        [Column("excluidoPor")]
         public int? ExcluidoPor { get; set; }
-
     }
 }
