@@ -199,6 +199,7 @@
                     localStorage.setItem('isLoggedIn', 'true');
                     localStorage.setItem('userId', data.idusuario);
                     localStorage.setItem("userName", data.nome);
+                    localStorage.setItem("userPhoto", data.fotoPerfil || "");
 
                     // Pegue o returnUrl da URL, se existir
                     const params = new URLSearchParams(window.location.search);

@@ -435,6 +435,10 @@
               <i class="fa-regular fa-heart" id="like-icon"></i>
               <span class="like-count" id="like-count">0</span>
             </button>
+            <button class="action-btn dislike-btn" id="dislike-btn">
+              <i class="fa-regular fa-thumbs-down" id="dislike-icon"></i>
+              <span class="dislike-count" id="dislike-count">0</span>
+            </button>
             <button
               id="delete-post-btn"
               style="display:none; background:#dc3545; color:#fff; border:none; border-radius:6px; padding:0.6rem 1.2rem; font-weight:bold; cursor:pointer;"
@@ -533,6 +537,7 @@
       let currentUserId = localStorage.getItem("userId");
       let currentUserName = localStorage.getItem("userName");
       let liked = false;
+      let disliked = false;
       let allComments = [];
 
       // Navbar dinâmica (mantém igual)
@@ -583,6 +588,9 @@
       const likeBtn = document.getElementById("like-btn");
       const likeIcon = document.getElementById("like-icon");
       const likeCount = document.getElementById("like-count");
+      const dislikeBtn = document.getElementById("dislike-btn");
+      const dislikeIcon = document.getElementById("dislike-icon");
+      const dislikeCount = document.getElementById("dislike-count");
       const loginMessage = document.getElementById("login-message");
       const commentForm = document.getElementById("comment-form");
       const commentInput = document.getElementById("comment-input");
@@ -629,9 +637,28 @@
             "https://via.placeholder.com/600x320?text=Sem+Imagem";
           dishImage.alt = prato.nome;
           dishTitle.textContent = prato.nome;
+          
+          // Formatar localização
+          let locationText = "";
+          if (prato.local && prato.local.trim()) {
+            locationText += prato.local;
+          }
+          if (prato.cidade && prato.cidade.trim()) {
+            if (locationText) locationText += " - ";
+            locationText += prato.cidade;
+          }
+          if (prato.estado && prato.estado.trim()) {
+            if (locationText) locationText += ", ";
+            locationText += prato.estado;
+          }
+          
+          if (!locationText) {
+            locationText = "Local não informado";
+          }
+          
           dishMeta.textContent = `Publicado por: ${
             prato.autor || prato.Autor || "Desconhecido"
-          } em ${formatDate(prato.dataPublicao)}`;
+          } em ${formatDate(prato.dataPublicao)} • ${locationText}`;
           dishDescription.textContent = prato.descricao;
 
           // Exibir botão de deletar para o autor do prato
@@ -669,15 +696,32 @@
         return data.liked;
       }
 
-      // Carregar likes
+      // Função para verificar se o usuário já deu dislike
+      async function userDisliked() {
+        if (!isLoggedIn) return false;
+        const res = await fetch(
+          `/api/publicacoes/UserDisliked?postId=${pratoId}&userId=${currentUserId}`
+        );
+        if (!res.ok) return false;
+        const data = await res.json();
+        return data.disliked;
+      }
+
+      // Carregar likes e dislikes
       async function loadLikes() {
         try {
-          const data = await fetch(
+          const likesData = await fetch(
             `/api/publicacoes/LikesCount/${pratoId}`
           ).then((r) => r.json());
-          likeCount.textContent = data.likes ?? 0;
+          likeCount.textContent = likesData.likes ?? 0;
+
+          const dislikesData = await fetch(
+            `/api/publicacoes/DislikesCount/${pratoId}`
+          ).then((r) => r.json());
+          dislikeCount.textContent = dislikesData.dislikes ?? 0;
         } catch {
           likeCount.textContent = 0;
+          dislikeCount.textContent = 0;
         }
       }
 
@@ -702,6 +746,10 @@
             likeBtn.classList.add("liked");
             likeIcon.classList.remove("fa-regular");
             likeIcon.classList.add("fa-solid");
+            // Remover estado ativo do dislike
+            dislikeBtn.classList.remove("liked");
+            dislikeIcon.classList.remove("fa-solid");
+            dislikeIcon.classList.add("fa-regular");
             await loadLikes();
           } else {
             alert("Você já curtiu esse prato.");
@@ -720,6 +768,52 @@
             await loadLikes();
           } else {
             alert("Erro ao remover like.");
+          }
+        }
+      });
+
+      dislikeBtn.addEventListener("click", async () => {
+        if (!isLoggedIn) {
+          alert("Você precisa estar logado para descurtir.");
+          return;
+        }
+
+        // Sempre consulte o backend para saber se está descurtido
+        let dislikedNow = await userDisliked();
+
+        if (!dislikedNow) {
+          // Descurtir
+          const res = await fetch("/api/publicacoes/Dislike", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idPost: pratoId, idUsuario: currentUserId }),
+          });
+          if (res.ok) {
+            dislikeBtn.classList.add("liked");
+            dislikeIcon.classList.remove("fa-regular");
+            dislikeIcon.classList.add("fa-solid");
+            // Remover estado ativo do like
+            likeBtn.classList.remove("liked");
+            likeIcon.classList.remove("fa-solid");
+            likeIcon.classList.add("fa-regular");
+            await loadLikes();
+          } else {
+            alert("Você já descurtiu esse prato.");
+          }
+        } else {
+          // Remover dislike
+          const res = await fetch("/api/publicacoes/Dislike", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ idPost: pratoId, idUsuario: currentUserId }),
+          });
+          if (res.ok) {
+            dislikeBtn.classList.remove("liked");
+            dislikeIcon.classList.remove("fa-solid");
+            dislikeIcon.classList.add("fa-regular");
+            await loadLikes();
+          } else {
+            alert("Erro ao remover dislike.");
           }
         }
       });
@@ -837,6 +931,8 @@
         await loadDish();
         await loadLikes();
         liked = await userLiked();
+        disliked = await userDisliked();
+        
         if (liked) {
           likeBtn.classList.add("liked");
           likeIcon.classList.remove("fa-regular");
@@ -846,6 +942,17 @@
           likeIcon.classList.remove("fa-solid");
           likeIcon.classList.add("fa-regular");
         }
+
+        if (disliked) {
+          dislikeBtn.classList.add("liked");
+          dislikeIcon.classList.remove("fa-regular");
+          dislikeIcon.classList.add("fa-solid");
+        } else {
+          dislikeBtn.classList.remove("liked");
+          dislikeIcon.classList.remove("fa-solid");
+          dislikeIcon.classList.add("fa-regular");
+        }
+        
         await loadComments();
         updateCommentForm();
       });

@@ -30,5 +30,8 @@ namespace SaborBrasil.Models
 
         [Column("created_at")] // Mapeia para a coluna "created_at"
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [Column("foto_perfil")] // Mapeia para a coluna "foto_perfil"
+        public string? FotoPerfil { get; set; }
     }
 }
